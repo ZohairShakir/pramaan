@@ -85,7 +85,7 @@ export default function DocumentDetailsModal({ details }: Props) {
                   {details.fileUrl ? (
                     <DocumentPreviewWrapper 
                       fileUrl={details.fileUrl} 
-                      mimeType={details.mimeType}
+                      mimeType={details.mimeType || null}
                       fileName={details.name}
                     />
                   ) : (

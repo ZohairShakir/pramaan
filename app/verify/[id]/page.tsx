@@ -94,7 +94,7 @@ export default async function VerificationPage({ params }: { params: { id: strin
               {status === 'verified' && details?.fileUrl ? (
                 <DocumentPreviewWrapper 
                   fileUrl={details.fileUrl} 
-                  mimeType={details.mimeType}
+                  mimeType={details.mimeType || null}
                   fileName={details.name}
                 />
               ) : (
