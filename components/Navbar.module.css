@@ -1,0 +1,97 @@
+.navbar {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 1rem;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: transparent;
+}
+
+.container {
+  max-width: 1400px;
+  width: calc(100% - 4rem);
+  margin: 0 auto;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(15px);
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+}
+
+.logo {
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: var(--foreground);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+}
+
+.logo::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background-color: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--accent);
+}
+
+.links {
+  display: flex;
+  gap: 2.5rem;
+}
+
+.link {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  opacity: 0.4;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none !important;
+}
+
+.link:hover {
+  opacity: 1;
+  color: var(--accent);
+}
+
+.menuButton {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.menuButton span {
+  display: block;
+  width: 18px;
+  height: 1.5px;
+  background-color: var(--foreground);
+}
+
+@media (max-width: 768px) {
+  .container {
+    width: calc(100% - 2rem);
+  }
+
+  .links {
+    display: none; /* Keep it simple for mobile in this aesthetic */
+  }
+
+  .menuButton {
+    display: flex;
+  }
+}

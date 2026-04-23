@@ -1,0 +1,123 @@
+:root {
+  /* Ultra-Premium Minimalist Palette with Olive Green Accent */
+  --background: #ffffff;
+  --foreground: #000000;
+  
+  --primary: #000000;
+  --primary-foreground: #ffffff;
+  
+  --secondary: #f5f5f7;
+  --secondary-foreground: #000000;
+  
+  --accent: #6B7D5C; /* Olive Green - Professional & Earthy */
+  --accent-muted: rgba(107, 125, 92, 0.1);
+  
+  --card: #ffffff;
+  --card-foreground: #000000;
+  
+  --border: #e5e5e7;
+  --input: #f5f5f7;
+  
+  --muted: #86868b;
+  --muted-foreground: #1d1d1f;
+  
+  --success: #28cd41;
+  --error: #ff3b30;
+  
+  --radius: 0px; 
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+
+[data-theme='dark'] {
+  --background: #000000;
+  --foreground: #ffffff;
+  --primary: #ffffff;
+  --secondary: #1c1c1e;
+  --card: #1c1c1e;
+  --border: #333333;
+  --muted: #86868b;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  background-color: var(--background);
+  color: var(--foreground);
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+a {
+  text-decoration: none !important; /* Global removal of underlines */
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font: inherit;
+  transition: all 0.2s ease;
+}
+
+/* Subtle selection color */
+::selection {
+  background: var(--accent);
+  color: white;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+
+/* Animation Utilities */
+.fade-in {
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.text-accent {
+  color: var(--accent) !important;
+}

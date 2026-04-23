@@ -1,0 +1,66 @@
+# PRAMAAN DESIGN SYSTEM MANIFEST (v2.0)
+# Optimized for AI Context & Implementation
+
+[AESTHETIC CORE]
+Style: High-end Swiss Minimalism / Premium Editorial
+Energy: Trustworthy, Authoritative, Secure, "Apple-standard"
+Key Visuals: Massive typography, Ultra-rounded cards, Glassmorphism navigation.
+
+[COLOR PALETTE - HEX TOKENS]
+- Background: #F2F2F2 (Soft Grey)
+- Foreground: #1E1E1E (Deep Charcoal)
+- Accent (Success/Verified): #6B7D5C (Olive Green)
+- Error (Tampered/Invalid): #D9534F (Vibrant Red)
+- Surfaces (Cards): #FFFFFF (Pure White)
+- Borders/Dividers: #E0E0E0
+- Muted/Labels: #A0A0A0
+
+[TYPOGRAPHY - GOOGLE FONTS]
+- Headings: Outfit (Geometric Sans)
+- Body: Inter (Clean Sans)
+- System: Monospace (for Hashes/IDs)
+
+[TYPE SCALE - EDITORIAL HIERARCHY]
+- Hero Titles: 8rem, Weight 800, Tracking -0.05em, UPPERCASE
+- Page Headers: 2.5rem, Weight 700, Tracking -0.04em, UPPERCASE
+- Section Labels: 0.65rem, Weight 800, Tracking 0.2em, UPPERCASE
+- Body Text: 1rem, Weight 400, Line-height 1.5
+
+[COMPONENT BLUEPRINTS]
+1. TICKET CARD:
+   - Surface: White (#FFFFFF)
+   - Border Radius: 40px
+   - Separation: 1px dashed dividers
+   - Shadow: 0 10px 30px rgba(0,0,0,0.05)
+
+2. PILL NAVIGATION (Navbar):
+   - Shape: Floating Capsule / Pill
+   - Effect: 15px Backdrop Blur + Glassmorphism
+   - Feature: "Network Heartbeat" (Glowing Olive dot in Logo)
+
+3. AUDIT MODAL:
+   - Layout: Two-panel side-by-side (stacks on mobile)
+   - Left: Metadata/Audit logs
+   - Right: Live Document Preview window
+   - Blur: 15px Backdrop overlay
+
+4. STATUS CIRCLES:
+   - Verified: Olive Green circle + white tick
+   - Tampered: Red circle + white cross
+
+[LAYOUT ARCHITECTURE]
+- Landing Page: High-impact editorial with protocol-badged tickets.
+- Verification Hub: Task-focused single-column card for ID/Upload.
+- Dashboard: "System Registry" with horizontal activity tickets.
+- All pages use #F2F2F2 background to make white ticket-cards pop.
+
+[UX PRINCIPLES]
+- Zero-Latency Authority: Oversized, color-coded status indicators.
+- Side-by-Side Truth: Compare visual files with technical hashes in one view.
+- Task Focused: Removal of global link underlines and sticky navs to favor content flow.
+
+[IMPLEMENTATION STACK]
+- Framework: Next.js (App Router)
+- Styling: Vanilla CSS Modules
+- Auth: NextAuth (Protected Dashboards, Public Verification)
+- Icons: SVG Path-based (Clean, monochromatic)

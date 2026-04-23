@@ -1,0 +1,110 @@
+.tableContainer {
+  width: 100%;
+  background-color: var(--background);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.table th {
+  padding: 1.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.5;
+  border-bottom: 1px solid var(--border);
+}
+
+.table td {
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  font-size: 0.95rem;
+}
+
+.row {
+  transition: background-color 0.2s;
+}
+
+.row:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.nameCell {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.docIcon {
+  font-size: 1.25rem;
+  opacity: 0.8;
+}
+
+.typeCell {
+  opacity: 0.6;
+}
+
+.dateCell {
+  opacity: 0.6;
+}
+
+.status {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.verified {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: var(--success);
+}
+
+.tampered {
+  background-color: rgba(217, 83, 79, 0.1);
+  color: var(--error);
+}
+
+.actionsCell {
+  display: flex;
+  gap: 1rem;
+}
+
+.actionIcon {
+  cursor: pointer;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+  font-size: 1.1rem;
+}
+
+.actionIcon:hover {
+  opacity: 1;
+}
+
+@media (max-width: 1024px) {
+  .table th:nth-child(2),
+  .table td:nth-child(2) {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .table th:nth-child(3),
+  .table td:nth-child(3) {
+    display: none;
+  }
+  .table th,
+  .table td {
+    padding: 1rem;
+  }
+  .nameCell {
+    font-size: 0.9rem;
+  }
+}

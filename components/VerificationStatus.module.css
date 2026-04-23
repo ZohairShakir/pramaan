@@ -1,0 +1,69 @@
+.statusBlock {
+  text-align: center;
+  padding: 4rem 2rem;
+  margin: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.icon {
+  font-size: 4rem;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.title {
+  font-size: 6rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  margin: 0;
+  line-height: 1;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  max-width: 600px;
+  color: var(--foreground);
+  opacity: 0.8;
+  font-weight: 500;
+}
+
+/* Status Specific Colors */
+.verified .icon,
+.verified .title {
+  color: var(--success);
+}
+
+.tampered .icon,
+.tampered .title {
+  color: var(--error);
+}
+
+.notFound .icon,
+.notFound .title {
+  color: var(--accent);
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .title {
+    font-size: 3.5rem;
+  }
+  .statusBlock {
+    padding: 3rem 1rem;
+  }
+  .icon {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 2.5rem;
+  }
+  .subtitle {
+    font-size: 1.1rem;
+  }
+}

@@ -1,0 +1,246 @@
+.actionRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.actionRow:hover {
+  background-color: #fafafa;
+}
+
+.actionLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.actionIcon {
+  color: var(--foreground);
+  opacity: 0.7;
+}
+
+.actionText {
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.chevron {
+  color: #c0c0c0;
+}
+
+/* Modal Overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(15px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem; /* Less padding on mobile */
+  animation: fadeIn 0.3s ease;
+  overflow-y: auto; /* Allow overlay scroll if modal is huge */
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal {
+  background: transparent;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh; /* Don't exceed viewport */
+  overflow-y: auto; /* Enable scroll */
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.modal::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome, Safari and Opera */
+}
+
+@keyframes slideUp {
+  from { transform: translateY(50px) scale(0.95); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.modalContent {
+  display: flex;
+  background: white;
+  border-radius: 40px;
+  overflow: hidden;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.2);
+}
+
+.metaPanel {
+  flex: 1;
+  padding: 3rem;
+  border-right: 1px solid #f0f0f0;
+  background: #ffffff;
+}
+
+.previewPanel {
+  flex: 1;
+  padding: 3rem;
+  background: #fdfdfd;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+}
+
+.badge {
+  padding: 0.4rem 1rem;
+  background: #f5f5f7;
+  border-radius: 100px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.closeBtn {
+  color: #c0c0c0;
+  transition: color 0.2s;
+}
+
+.closeBtn:hover {
+  color: var(--foreground);
+}
+
+.docName {
+  font-family: var(--font-outfit);
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  margin-bottom: 0.5rem;
+  line-height: 1.1;
+}
+
+.docId {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #a0a0a0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  border-top: 1px dashed #e0e0e0;
+  margin: 2.5rem 0;
+}
+
+.metaGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.metaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #a0a0a0;
+}
+
+.value {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.hashSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.hashCode {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  word-break: break-all;
+  background: #f5f5f7;
+  padding: 1.25rem;
+  border-radius: 20px;
+  opacity: 0.7;
+  line-height: 1.6;
+}
+
+.previewContainer {
+  flex: 1;
+  background: #ffffff;
+  border-radius: 25px;
+  border: 1px solid #f0f0f0;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.noPreview {
+  font-size: 0.875rem;
+  color: #a0a0a0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.actionBtn {
+  width: 100%;
+  padding: 1.25rem;
+  background: var(--foreground);
+  color: white;
+  border-radius: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.actionBtn:hover {
+  background: var(--accent);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 900px) {
+  .modalContent {
+    flex-direction: column;
+  }
+  
+  .metaPanel {
+    border-right: none;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .modal {
+    max-width: 450px;
+  }
+}

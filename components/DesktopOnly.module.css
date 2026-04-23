@@ -1,0 +1,75 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  z-index: 9999;
+  text-align: center;
+}
+
+.content {
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.illustration {
+  font-size: 4rem;
+  margin-bottom: 0.5rem;
+}
+
+.title {
+  font-family: var(--font-outfit);
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+.message {
+  font-size: 1rem;
+  line-height: 1.6;
+  opacity: 0.6;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.homeBtn {
+  background-color: var(--primary);
+  color: white;
+  padding: 1rem;
+  border-radius: var(--radius);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.verifyBtn {
+  background-color: var(--card);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  padding: 1rem;
+  border-radius: var(--radius);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.editorial {
+  margin-top: 2rem;
+  font-family: serif;
+  font-style: italic;
+  font-size: 1.1rem;
+  opacity: 0.3;
+  color: var(--accent);
+}

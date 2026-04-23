@@ -1,0 +1,158 @@
+.page {
+  min-height: 100vh;
+  background-color: #f2f2f2;
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  flex: 1;
+  padding: 10rem 2rem 6rem;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.header {
+  text-align: center;
+}
+
+.eyebrow {
+  display: inline-flex;
+  padding: 0.4rem 1rem;
+  background: white;
+  border-radius: 100px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-family: var(--font-outfit);
+  font-size: 5rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+}
+
+/* Activity List as Tickets */
+.activityGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.ticketCard {
+  background: white;
+  border-radius: 30px;
+  padding: 2rem 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+  transition: all 0.3s ease;
+  text-decoration: none !important;
+  color: inherit;
+}
+
+.ticketCard:hover {
+  transform: scale(1.02);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.06);
+}
+
+.cardLeft {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.statusIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #f5f5f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+}
+
+.docInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.docName {
+  font-weight: 700;
+  font-size: 1.125rem;
+  margin-bottom: 0.25rem;
+}
+
+.docMeta {
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cardRight {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.badge {
+  padding: 0.4rem 1rem;
+  background: rgba(107, 125, 92, 0.05);
+  color: var(--accent);
+  border-radius: 100px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.chevron {
+  opacity: 0.2;
+}
+
+.emptyState {
+  background: white;
+  border-radius: 40px;
+  padding: 6rem;
+  text-align: center;
+  border: 1px dashed #e0e0e0;
+}
+
+.emptyState p {
+  color: var(--muted);
+  font-size: 1.125rem;
+  margin-bottom: 2rem;
+}
+
+.ctaButton {
+  display: inline-block;
+  padding: 1rem 3rem;
+  background: var(--foreground);
+  color: var(--background);
+  border-radius: 100px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 0.75rem;
+}
+
+@media (max-width: 768px) {
+  .title { font-size: 3rem; }
+  .ticketCard { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+  .cardRight { width: 100%; justify-content: space-between; }
+}

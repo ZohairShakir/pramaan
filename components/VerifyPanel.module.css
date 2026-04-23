@@ -1,0 +1,113 @@
+.panel {
+  background-color: var(--card);
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.description {
+  font-size: 0.9rem;
+  opacity: 0.6;
+  line-height: 1.5;
+}
+
+.scannerMock {
+  width: 100%;
+  aspect-ratio: 1;
+  background-color: var(--background);
+  border-radius: 12px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.scannerLine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--primary);
+  box-shadow: 0 0 15px var(--primary);
+  animation: scan 3s infinite ease-in-out;
+}
+
+@keyframes scan {
+  0%, 100% { top: 10%; }
+  50% { top: 90%; }
+}
+
+.qrIcon {
+  font-size: 4rem;
+  opacity: 0.2;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.input {
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background-color: var(--background);
+  font-size: 0.9rem;
+}
+
+.verifyBtn {
+  background-color: var(--primary);
+  color: white;
+  padding: 0.85rem;
+  border-radius: 10px;
+  font-weight: 700;
+  transition: opacity 0.2s;
+}
+
+.verifyBtn:hover {
+  opacity: 0.9;
+}
+
+.editorial {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+  text-align: center;
+}
+
+.lineArt {
+  width: 40px;
+  height: 40px;
+  background-image: radial-gradient(var(--accent) 1px, transparent 1px);
+  background-size: 10px 10px;
+  opacity: 0.3;
+}
+
+.quote {
+  font-family: serif;
+  font-style: italic;
+  font-size: 1.1rem;
+  opacity: 0.3;
+  color: var(--accent);
+}
+
+@media (max-width: 1024px) {
+  .panel {
+    display: none;
+  }
+}
