@@ -1,0 +1,52 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: white;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.fadeOut {
+  opacity: 0;
+  transition: opacity 0.4s ease-out;
+}
+
+.dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  transform: scale(1);
+  transition: transform 0.8s cubic-bezier(0.8, 0, 0.2, 1);
+}
+
+.verified {
+  background-color: var(--accent);
+  box-shadow: 0 0 40px var(--accent);
+}
+
+.tampered {
+  background-color: var(--error);
+  box-shadow: 0 0 40px var(--error);
+}
+
+.expand {
+  transform: scale(200); /* Large enough to cover any screen */
+}
+
+.content {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.show {
+  opacity: 1;
+  transform: translateY(0);
+}

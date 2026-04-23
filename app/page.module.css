@@ -53,6 +53,10 @@
   color: var(--accent);
 }
 
+.errorText {
+  color: var(--error);
+}
+
 .subtitle {
   font-size: 1.5rem;
   color: var(--muted);
@@ -274,8 +278,31 @@
 }
 
 @media (max-width: 768px) {
-  .title { font-size: 3.5rem; }
-  .heroActions { flex-direction: column; width: 100%; }
-  .demoLink { font-size: 2rem; }
-  .demoSection { padding: 4rem 2rem; }
+  .container { padding: 2rem 1.5rem; }
+  .hero { padding: 4rem 0; }
+  .title { font-size: 3rem; margin-bottom: 2rem; }
+  .subtitle { font-size: 1.1rem; margin-bottom: 3rem; }
+  .heroActions { flex-direction: column; width: 100%; gap: 1rem; }
+  .primaryHeroButton, .secondaryHeroButton { padding: 1.25rem 2rem; width: 100%; text-align: center; }
+  
+  /* Demo Section Mobile Fixes */
+  .demoSection { 
+    padding: 3rem 1.5rem; 
+    border-radius: 40px; 
+    margin: 2rem 0;
+  }
+  .sectionHeader { margin-bottom: 2rem; }
+  .sectionTitle { font-size: 2.25rem; line-height: 1.1; }
+  .demoLink { 
+    padding: 2.5rem 0; 
+    font-size: 1.5rem; 
+    letter-spacing: -0.02em;
+  }
+  .demoLink:hover { padding-left: 0.5rem; }
+  .arrow { font-size: 1.5rem; opacity: 0.3; }
+  .demoLink:hover .arrow { transform: translateX(5px); }
+
+  .statValue { font-size: 3.5rem; }
+  .ticketCard { padding: 2.5rem 1.5rem; border-radius: 30px; }
+  .featureSection, .statsSection { padding: 4rem 0; }
 }
