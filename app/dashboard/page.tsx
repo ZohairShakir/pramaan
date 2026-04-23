@@ -3,11 +3,22 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import styles from './page.module.css';
 import Link from 'next/link';
+import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
+
+export const dynamic = 'force-dynamic';
 
 export default async function DashboardPage() {
+  const session = await getServerSession();
+  
+  if (!session) {
+    redirect('/login');
+  }
+
   // Fetch recent documents from the database
   const documents = await prisma.document.findMany({
-    orderBy: { verifiedOn: 'desc' },
+    where: { userId: (session.user as any)?.id }, // Only show user's documents
+    orderBy: { createdAt: 'desc' },
     take: 10
   });
 
