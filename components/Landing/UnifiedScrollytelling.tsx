@@ -183,21 +183,7 @@ export const UnifiedScrollytelling: React.FC = () => {
                     </div>
                   )}
 
-                  {step.isHero && (
-                    <Link href="/verify" className="group inline-flex items-center gap-8 transition-all">
-                      <motion.div className="w-16 h-16 rounded-full border border-cream/20 flex items-center justify-center text-cream group-hover:bg-terracotta group-hover:border-terracotta group-hover:text-cream transition-all duration-500 group-hover:scale-110">
-                          <ArrowRight size={28} />
-                      </motion.div>
-                      <div className="flex flex-col">
-                         <motion.span className="text-[10px] font-bold tracking-[0.4em] uppercase opacity-40 group-hover:opacity-100 transition-opacity text-cream">
-                           Ready to start?
-                         </motion.span>
-                         <motion.span className="text-sm font-bold tracking-[0.1em] uppercase group-hover:text-terracotta transition-colors text-cream">
-                           Explore Verification
-                         </motion.span>
-                      </div>
-                    </Link>
-                  )}
+
 
                   {step.cta && (
                     <motion.button 
