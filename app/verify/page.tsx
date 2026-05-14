@@ -91,11 +91,11 @@ export default function VerifyInputPage() {
                     <Globe size={12} />
                     Global Audit Protocol v2.4
                 </motion.div>
-                <h1 className="text-6xl md:text-9xl font-bold tracking-tight leading-[0.8] uppercase">
+                <h1 className="text-5xl md:text-7xl lg:text-9xl font-bold tracking-tight leading-[0.8] uppercase">
                     Audit <br />
-                    <span className="bg-lime px-4 py-2 rounded-sm inline-block mt-8">Authenticity.</span>
+                    <span className="bg-lime px-4 py-2 rounded-sm inline-block mt-4 md:mt-8">Authenticity.</span>
                 </h1>
-                <p className="text-lg md:text-xl text-black/40 font-medium leading-relaxed max-w-xl">
+                <p className="text-base md:text-xl text-black/40 font-medium leading-relaxed max-w-xl">
                     Verify the cryptographic integrity of any institutional asset in seconds. Pramaan secures the global layer of decentralized trust.
                 </p>
             </div>
@@ -109,7 +109,7 @@ export default function VerifyInputPage() {
             <div className="lg:col-span-8">
                 <div 
                     className={cn(
-                        "relative group h-full min-h-[550px] rounded-[4.5rem] border-2 border-dashed flex flex-col items-center justify-center p-12 text-center transition-all duration-700",
+                        "relative group h-full min-h-[400px] md:min-h-[550px] rounded-[2.5rem] md:rounded-[4.5rem] border-2 border-dashed flex flex-col items-center justify-center p-8 md:p-12 text-center transition-all duration-700",
                         isDragging ? "border-black bg-black/5 scale-[1.01]" : "border-black/5 bg-[#F8F8F8]",
                         isVerifying ? "pointer-events-none" : ""
                     )}
@@ -144,13 +144,13 @@ export default function VerifyInputPage() {
                                 </div>
                             </div>
 
-                            <div className="flex flex-col sm:flex-row gap-6 justify-center">
-                                <button onClick={() => fileInputRef.current?.click()} className="flex-1 rounded-2xl bg-black text-white h-18 text-sm font-bold hover:bg-black/90 transition-all shadow-2xl shadow-black/20">
+                            <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center w-full px-4">
+                                <button onClick={() => fileInputRef.current?.click()} className="flex-1 rounded-2xl bg-black text-white h-16 text-sm font-bold hover:bg-black/90 transition-all shadow-2xl shadow-black/20">
                                     Select Record
                                 </button>
                                 <button 
                                     onClick={() => setShowScanner(true)} 
-                                    className="w-18 h-18 rounded-2xl bg-white border border-black/10 hover:bg-black hover:text-lime flex items-center justify-center transition-all group/cam"
+                                    className="w-full sm:w-16 h-16 rounded-2xl bg-white border border-black/10 hover:bg-black hover:text-lime flex items-center justify-center transition-all group/cam"
                                 >
                                     <Camera size={28} className="transition-transform group-hover/cam:scale-110" />
                                 </button>
@@ -184,7 +184,7 @@ export default function VerifyInputPage() {
 
             {/* Sidebar Hub */}
             <div className="lg:col-span-4 space-y-8">
-                <div className="bg-[#F2E6E1] rounded-[4rem] p-12 space-y-12 border border-black/5 flex flex-col justify-between h-full lg:h-auto">
+                <div className="bg-[#F2E6E1] rounded-[2.5rem] md:rounded-[4rem] p-8 md:p-12 space-y-8 md:space-y-12 border border-black/5 flex flex-col justify-between h-full lg:h-auto">
                     <div className="space-y-6">
                         <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm">
                             <Search size={28} className="text-black/30" />
@@ -216,7 +216,7 @@ export default function VerifyInputPage() {
                     </div>
                 </div>
 
-                <div className="bg-black rounded-[3.5rem] p-12 space-y-8 text-white relative overflow-hidden group">
+                <div className="bg-black rounded-[2.5rem] md:rounded-[3.5rem] p-8 md:p-12 space-y-8 text-white relative overflow-hidden group">
                     <div className="absolute inset-0 bg-lime/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                     <div className="relative z-10 space-y-6">
                         <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center">
@@ -241,12 +241,12 @@ export default function VerifyInputPage() {
               { icon: <Zap className="text-black" size={28} />, title: 'Genesis Speed', desc: 'Audit records against the global registry with sub-second cryptographic response.' }
             ].map((f, i) => (
               <div key={i} className="space-y-8 group">
-                <div className="w-18 h-18 rounded-3xl bg-[#F8F8F8] border border-black/5 flex items-center justify-center group-hover:bg-lime group-hover:scale-110 transition-all duration-700">
+                <div className="w-16 h-16 rounded-3xl bg-[#F8F8F8] border border-black/5 flex items-center justify-center group-hover:bg-lime group-hover:scale-110 transition-all duration-700">
                   {f.icon}
                 </div>
                 <div className="space-y-4">
-                  <h4 className="text-3xl font-bold tracking-tight uppercase">{f.title}</h4>
-                  <p className="text-base font-medium text-black/40 leading-relaxed italic">{f.desc}</p>
+                  <h4 className="text-2xl md:text-3xl font-bold tracking-tight uppercase">{f.title}</h4>
+                  <p className="text-sm md:text-base font-medium text-black/40 leading-relaxed italic">{f.desc}</p>
                 </div>
               </div>
             ))}

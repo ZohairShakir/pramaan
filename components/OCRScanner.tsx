@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, Upload, Loader2, CheckCircle2, X, 
   RotateCcw, Sparkles, FileText, Zap, Shield, Search, Lock
@@ -27,22 +27,35 @@ export default function OCRScanner({ onScanComplete, onClose }: OCRScannerProps)
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [showCamera, setShowCamera] = useState(false);
 
+  const [stream, setStream] = useState<MediaStream | null>(null);
+
   const startCamera = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        setShowCamera(true);
-      }
+      const mediaStream = await navigator.mediaDevices.getUserMedia({ 
+        video: { 
+          facingMode: 'environment',
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        } 
+      });
+      setStream(mediaStream);
+      setShowCamera(true);
     } catch (err) {
       console.error('Camera error:', err);
+      setStatus('Camera access denied');
     }
   };
 
+  useEffect(() => {
+    if (showCamera && videoRef.current && stream) {
+      videoRef.current.srcObject = stream;
+    }
+  }, [showCamera, stream]);
+
   const stopCamera = () => {
-    if (videoRef.current?.srcObject) {
-      const stream = videoRef.current.srcObject as MediaStream;
+    if (stream) {
       stream.getTracks().forEach(track => track.stop());
+      setStream(null);
     }
     setShowCamera(false);
   };
@@ -107,10 +120,10 @@ export default function OCRScanner({ onScanComplete, onClose }: OCRScannerProps)
       <motion.div 
         initial={{ scale: 0.9, y: 20 }}
         animate={{ scale: 1, y: 0 }}
-        className="w-full max-w-5xl bg-white rounded-[4rem] shadow-[0_100px_150px_-50px_rgba(0,0,0,0.3)] border border-black/5 overflow-hidden relative"
+        className="w-full max-w-5xl h-full md:h-auto max-h-[95vh] bg-white rounded-[2.5rem] md:rounded-[4rem] shadow-[0_100px_150px_-50px_rgba(0,0,0,0.3)] border border-black/5 overflow-hidden relative flex flex-col"
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-10 border-b border-black/5 bg-[#F2E6E1]/30">
+        <div className="flex items-center justify-between p-6 md:p-10 border-b border-black/5 bg-[#F2E6E1]/30">
           <div className="flex items-center gap-5">
             <div className="w-12 h-12 rounded-2xl bg-black text-lime flex items-center justify-center">
               <Sparkles size={24} />
@@ -125,7 +138,7 @@ export default function OCRScanner({ onScanComplete, onClose }: OCRScannerProps)
           </button>
         </div>
 
-        <div className="p-10 grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div className="p-6 md:p-10 grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 overflow-y-auto">
           {/* Left: Viewport */}
           <div className="relative aspect-[4/5] bg-black/[0.02] rounded-[3rem] border-2 border-dashed border-black/5 overflow-hidden flex items-center justify-center group shadow-inner">
             {showCamera ? (
