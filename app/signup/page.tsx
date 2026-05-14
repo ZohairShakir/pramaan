@@ -17,7 +17,7 @@ export default function SignupPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
-  const [document, setDocument] = useState<File | null>(null);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -31,7 +31,7 @@ export default function SignupPage() {
       }
       setStep('DOCUMENTS');
     } else if (step === 'DOCUMENTS') {
-      if (!document) {
+      if (!uploadedFile) {
         setError('Please upload an institutional verification document.');
         return;
       }
@@ -56,9 +56,16 @@ export default function SignupPage() {
     setOtp(newOtp);
 
     // Auto focus next input
-    if (value && index < 5 && typeof document !== 'undefined') {
+    if (value && index < 5) {
       const nextInput = document.getElementById(`otp-${index + 1}`);
       nextInput?.focus();
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setUploadedFile(file);
     }
   };
 
@@ -227,14 +234,16 @@ export default function SignupPage() {
                   <div
                     className={cn(
                       "w-full h-48 rounded-3xl border-2 border-dashed flex flex-col items-center justify-center gap-4 transition-all cursor-pointer overflow-hidden relative",
-                      document ? "border-black bg-black/5" : "border-black/10 hover:border-black/30 bg-black/[0.01]"
+                      uploadedFile ? "border-black bg-black/5" : "border-black/10 hover:border-black/30 bg-black/[0.01]"
                     )}
                     onClick={() => document.getElementById('file-upload')?.click()}
                   >
-                    {document ? (
+                    {uploadedFile ? (
                       <div className="flex flex-col items-center gap-2">
-                        <CheckCircle2 size={32} className="text-black" />
-                        <span className="text-sm font-bold text-black">{document.name}</span>
+                        <div className="w-10 h-10 rounded-xl bg-lime flex items-center justify-center">
+                          <CheckCircle2 size={20} />
+                        </div>
+                        <p className="text-sm font-bold truncate max-w-[200px]">{uploadedFile.name}</p>
                         <span className="text-[10px] text-black/40 uppercase tracking-widest">Click to replace</span>
                       </div>
                     ) : (
@@ -249,7 +258,7 @@ export default function SignupPage() {
                       id="file-upload"
                       type="file"
                       className="hidden"
-                      onChange={(e) => setDocument(e.target.files?.[0] || null)}
+                      onChange={(e) => setUploadedFile(e.target.files?.[0] || null)}
                     />
                   </div>
                 </div>
