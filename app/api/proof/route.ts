@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
             await sendProofEmail({
                 to: recipientEmail,
                 recipientName: recipientName || 'Public Holder',
-                issuerName: (session.user as any)?.organizationName || session.user.name || 'Institutional Node',
+                issuerName: (session.user as any)?.organizationName || session.user?.name || 'Institutional Node',
                 documentName: file.name,
                 verifyUrl: `${baseUrl}/verify/${document.id}`,
                 registryId: document.id,
