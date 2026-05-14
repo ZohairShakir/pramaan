@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 import { render } from '@react-email/render';
 import { ProofEmailTemplate, WelcomeEmailTemplate, OTPEmailTemplate } from './email-templates';
+import * as React from 'react';
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
@@ -32,13 +33,15 @@ export async function sendProofEmail({
   console.log(`[EMAIL_HUB] Attempting to send Proof email to: ${to}`);
   try {
     console.log(`[EMAIL_HUB] Rendering Proof template for: ${documentName}`);
-    const html = await render(ProofEmailTemplate({
-      recipientName,
-      issuerName,
-      documentName,
-      verifyUrl,
-      registryId,
-    }));
+    const html = await render(
+      <ProofEmailTemplate 
+        recipientName={recipientName}
+        issuerName={issuerName}
+        documentName={documentName}
+        verifyUrl={verifyUrl}
+        registryId={registryId}
+      />
+    );
 
     console.log(`[EMAIL_HUB] SMTP Handshake initiated...`);
     const info = await transporter.sendMail({
@@ -66,7 +69,7 @@ export async function sendWelcomeEmail({
   console.log(`[EMAIL_HUB] Attempting to send Welcome email to: ${to}`);
   try {
     console.log(`[EMAIL_HUB] Rendering Welcome template for: ${userName}`);
-    const html = await render(WelcomeEmailTemplate({ userName }));
+    const html = await render(<WelcomeEmailTemplate userName={userName} />);
 
     console.log(`[EMAIL_HUB] SMTP Handshake initiated...`);
     const info = await transporter.sendMail({
@@ -94,7 +97,7 @@ export async function sendOTPEmail({
   console.log(`[EMAIL_HUB] Attempting to send OTP email to: ${to}`);
   try {
     console.log(`[EMAIL_HUB] Rendering OTP template...`);
-    const html = await render(OTPEmailTemplate({ otpCode }));
+    const html = await render(<OTPEmailTemplate otpCode={otpCode} />);
 
     console.log(`[EMAIL_HUB] SMTP Handshake initiated...`);
     const info = await transporter.sendMail({
