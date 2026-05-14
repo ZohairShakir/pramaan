@@ -24,8 +24,8 @@ export default async function UserLockerPage() {
   const documents = await prisma.document.findMany({
     where: {
       OR: [
-        { recipient: userEmail },
-        { recipient: session.user?.name }
+        { recipientEmail: userEmail },
+        { recipientName: session.user?.name }
       ]
     },
     orderBy: { createdAt: 'desc' },
