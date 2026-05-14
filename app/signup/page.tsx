@@ -56,7 +56,7 @@ export default function SignupPage() {
     setOtp(newOtp);
 
     // Auto focus next input
-    if (value && index < 5) {
+    if (value && index < 5 && typeof document !== 'undefined') {
       const nextInput = document.getElementById(`otp-${index + 1}`);
       nextInput?.focus();
     }
