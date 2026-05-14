@@ -9,7 +9,7 @@ import {
   FileText, ShieldCheck, Download, 
   ExternalLink, ArrowRight, Search, 
   Clock, Fingerprint, Globe, Lock,
-  Share2, ArrowUpRight, Zap
+  Share2, ArrowUpRight, Zap, Eye
 } from 'lucide-react';
 import { Logo } from '@/components/Logo';
 import { cn } from '@/lib/utils';
