@@ -75,8 +75,8 @@ export default async function DashboardPage() {
                     <LayoutDashboard size={12} />
                     Administrative Console
                 </div>
-                <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
-                    Welcome, <br /><span className="bg-lime px-4 py-1 rounded-sm inline-block mt-2">{orgName.split(' ')[0]}</span>
+                <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight">
+                    Welcome, <br /><span className="bg-lime px-4 py-1 rounded-sm inline-block mt-1 md:mt-2">{orgName.split(' ')[0]}</span>
                 </h1>
             </div>
             <div className="flex gap-4">

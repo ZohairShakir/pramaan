@@ -8,7 +8,7 @@ import { SmartphoneMockup } from "./SmartphoneMockup";
 
 export const HeroV2: React.FC = () => {
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center pt-16 pb-20 px-6 overflow-hidden bg-white">
+    <section className="relative min-h-screen flex flex-col items-center justify-center pt-32 lg:pt-16 pb-20 px-6 overflow-hidden bg-white">
       <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         {/* Left Content */}
         <div className="z-10 text-left">

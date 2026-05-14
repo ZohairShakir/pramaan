@@ -157,14 +157,14 @@ export default async function VerificationPage({ params }: VerificationPageProps
 
             <div className="bg-white rounded-[4rem] border border-black/5 overflow-hidden shadow-2xl">
                 {/* Hero Status Banner */}
-                <div className={cn("p-16 md:p-32 text-center space-y-10 relative overflow-hidden", statusConfig.bg)}>
+                <div className={cn("p-12 md:p-24 lg:p-32 text-center space-y-8 md:space-y-10 relative overflow-hidden", statusConfig.bg)}>
                     <div className="w-24 h-24 md:w-32 md:h-32 rounded-[2.5rem] bg-white flex items-center justify-center mx-auto shadow-2xl relative z-10 animate-in zoom-in duration-700">
                         <div className={statusConfig.accentColor}>{statusConfig.icon}</div>
                     </div>
                     <div className="space-y-6 relative z-10">
-                        <h1 className="text-6xl md:text-9xl font-bold tracking-tight uppercase leading-[0.8]">
+                        <h1 className="text-4xl md:text-7xl lg:text-9xl font-bold tracking-tight uppercase leading-[0.8]">
                             {statusConfig.label.split(' ')[0]} <br />
-                            <span className="bg-white px-6 py-2 rounded-sm text-black inline-block mt-8">{statusConfig.label.split(' ')[1]}</span>
+                            <span className="bg-white px-6 py-2 rounded-sm text-black inline-block mt-4 md:mt-8">{statusConfig.label.split(' ')[1]}</span>
                         </h1>
                         <p className="text-black/30 font-bold text-xs md:text-sm uppercase tracking-[0.5em] flex items-center justify-center gap-4">
                             <span className="w-8 h-px bg-black/10" />
@@ -176,7 +176,7 @@ export default async function VerificationPage({ params }: VerificationPageProps
                 </div>
 
                 {/* Content Grid */}
-                <div className="p-12 md:p-20 space-y-20">
+                <div className="p-8 md:p-12 lg:p-20 space-y-16 md:space-y-20">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
                         {/* Visual Proof Section */}
                         <div className="space-y-12">

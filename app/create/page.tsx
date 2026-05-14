@@ -163,9 +163,9 @@ export default function CreateProofPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
-                  className="text-6xl md:text-8xl font-bold tracking-tight leading-[1.1]"
+                  className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.1]"
                 >
-                  Anchor <br /><span className="bg-lime px-4 py-1 rounded-sm inline-block mt-4">Genesis.</span>
+                  Anchor <br /><span className="bg-lime px-4 py-1 rounded-sm inline-block mt-2 md:mt-4">Genesis.</span>
                 </motion.h1>
                 
                 <motion.p 
