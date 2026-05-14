@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Inter, Outfit, Cormorant_Garamond, Rozha_One } from "next/font/google";
 import "./globals.css";
 
