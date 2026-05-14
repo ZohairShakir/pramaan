@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Mail, Lock, Loader2, ArrowLeft, AlertCircle, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Logo } from '@/components/Logo';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -46,11 +47,12 @@ export default function LoginPage() {
       {/* Left: Branding & Visual */}
       <div className="hidden md:flex md:w-[40%] bg-black p-12 flex-col justify-between relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#F2E6E110,transparent_70%)] pointer-events-none" />
+        <div className="absolute -bottom-20 -left-20 opacity-[0.07] pointer-events-none">
+          <Logo size={600} />
+        </div>
 
         <Link href="/" className="flex items-center gap-2 group z-10">
-          <div className="w-8 h-8 rounded-lg bg-white text-black flex items-center justify-center font-bold">
-            P
-          </div>
+          <Logo size={40} />
           <span className="text-white font-bold text-xl tracking-tight">Pramaan</span>
         </Link>
 
@@ -72,8 +74,8 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Right: Auth Form */}
-      <div className="flex-1 flex flex-col items-center justify-center p-8 md:p-16 lg:p-24 bg-white">
+       {/* Right: Auth Form */}
+       <div className="flex-1 flex flex-col items-center justify-center p-6 md:p-16 lg:p-24 bg-white">
         <div className="w-full max-w-md space-y-12">
           <div className="space-y-4">
             <div className="flex items-center gap-2">

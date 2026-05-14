@@ -25,7 +25,8 @@ import {
   Fingerprint,
   Cpu,
   History,
-  Scale
+  Scale,
+  X
 } from 'lucide-react';
 
 export default function VerifyInputPage() {
@@ -78,7 +79,7 @@ export default function VerifyInputPage() {
       <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-lime/5 rounded-full blur-[100px] -ml-48 -mb-48 pointer-events-none" />
 
       <main className="pt-32 md:pt-48 pb-32 px-6 relative z-10">
-        <div className="max-w-7xl mx-auto space-y-32">
+        <div className="max-w-7xl mx-auto space-y-20 md:space-y-32">
           
           {/* Header Section */}
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12">
@@ -104,12 +105,12 @@ export default function VerifyInputPage() {
           </div>
 
           {/* Interaction Hub */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-stretch">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-12 items-stretch">
             {/* Upload Zone (The Sensor Pad) */}
             <div className="lg:col-span-8">
                 <div 
                     className={cn(
-                        "relative group h-full min-h-[400px] md:min-h-[550px] rounded-[2.5rem] md:rounded-[4.5rem] border-2 border-dashed flex flex-col items-center justify-center p-8 md:p-12 text-center transition-all duration-700",
+                        "relative group w-full rounded-[2.5rem] md:rounded-[4.5rem] border-2 border-dashed flex flex-col items-center justify-center py-16 md:py-24 px-8 md:px-12 text-center transition-all duration-700",
                         isDragging ? "border-black bg-black/5 scale-[1.01]" : "border-black/5 bg-[#F8F8F8]",
                         isVerifying ? "pointer-events-none" : ""
                     )}
@@ -131,60 +132,64 @@ export default function VerifyInputPage() {
                             </div>
                         </div>
                     ) : (
-                        <div className="space-y-16 relative z-10 w-full max-w-lg">
+                        <div className="space-y-12 relative z-10 w-full max-w-lg">
                             <div className="space-y-8">
                                 <div className="w-28 h-28 rounded-[2.5rem] bg-black text-white flex items-center justify-center mx-auto shadow-2xl group-hover:rotate-6 transition-transform duration-500">
                                     <Upload size={40} className="text-lime" />
                                 </div>
                                 <div className="space-y-4">
-                                    <h3 className="text-5xl font-bold tracking-tight uppercase">Sensor Pad</h3>
-                                    <p className="text-base font-medium text-black/40 leading-relaxed max-w-sm mx-auto">
+                                    <h3 className="text-3xl md:text-5xl font-bold tracking-tight uppercase">Sensor Pad</h3>
+                                    <p className="text-sm md:text-base font-medium text-black/40 leading-relaxed max-w-sm mx-auto px-4">
                                         Drop your digital record here to verify against the immutable genesis ledger.
                                     </p>
                                 </div>
                             </div>
 
-                            <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center w-full px-4">
-                                <button onClick={() => fileInputRef.current?.click()} className="flex-1 rounded-2xl bg-black text-white h-16 text-sm font-bold hover:bg-black/90 transition-all shadow-2xl shadow-black/20">
-                                    Select Record
+                            <div className="flex gap-4 w-full">
+                                <button onClick={() => fileInputRef.current?.click()} className="flex-1 rounded-2xl bg-black text-white h-16 text-sm font-bold hover:bg-black/90 transition-all shadow-2xl shadow-black/20 flex items-center justify-center gap-2">
+                                    <Upload size={20} />
+                                    <span className="hidden sm:inline">Select Record</span>
                                 </button>
                                 <button 
                                     onClick={() => setShowScanner(true)} 
-                                    className="w-full sm:w-16 h-16 rounded-2xl bg-white border border-black/10 hover:bg-black hover:text-lime flex items-center justify-center transition-all group/cam"
+                                    className="flex-1 rounded-2xl bg-white border border-black/10 hover:bg-black hover:text-lime flex items-center justify-center transition-all group/cam gap-2"
                                 >
-                                    <Camera size={28} className="transition-transform group-hover/cam:scale-110" />
+                                    <Camera size={20} className="transition-transform group-hover/cam:scale-110" />
+                                    <span className="hidden sm:inline">Use Camera</span>
                                 </button>
                             </div>
 
                             <p className="text-[10px] font-bold text-black/20 uppercase tracking-[0.4em]">
                                 Privacy First: Local Hash Generation Only
                             </p>
+
+                            {/* Error State - Now in Flow */}
+                            <AnimatePresence>
+                                {verifyError && (
+                                <motion.div 
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: 'auto' }}
+                                    exit={{ opacity: 0, height: 0 }}
+                                    className="w-full flex items-center gap-4 p-6 rounded-3xl bg-red-50 text-red-500 text-xs font-bold border border-red-100 overflow-hidden"
+                                >
+                                    <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                                    <div className="text-left">
+                                        <p className="text-black/60">{verifyError}</p>
+                                    </div>
+                                    <button onClick={() => setVerifyError(null)} className="ml-auto text-black/20 hover:text-black">
+                                        <X size={14} />
+                                    </button>
+                                </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
                     )}
-
-                    {/* Error State */}
-                    <AnimatePresence>
-                        {verifyError && (
-                        <motion.div 
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0 }}
-                            className="absolute bottom-12 left-12 right-12 flex items-center gap-6 p-10 rounded-[2.5rem] bg-white text-red-500 text-sm font-bold border border-red-50 shadow-2xl"
-                        >
-                            <AlertCircle className="w-8 h-8 flex-shrink-0" />
-                            <div className="space-y-1">
-                                <p className="uppercase tracking-widest text-[10px] opacity-40">Verification Failed</p>
-                                <p className="text-black">{verifyError}</p>
-                            </div>
-                        </motion.div>
-                        )}
-                    </AnimatePresence>
                 </div>
             </div>
 
             {/* Sidebar Hub */}
             <div className="lg:col-span-4 space-y-8">
-                <div className="bg-[#F2E6E1] rounded-[2.5rem] md:rounded-[4rem] p-8 md:p-12 space-y-8 md:space-y-12 border border-black/5 flex flex-col justify-between h-full lg:h-auto">
+                <div className="bg-[#F2E6E1] rounded-[2.5rem] md:rounded-[4rem] p-8 md:p-12 space-y-8 md:space-y-12 border border-black/5 flex flex-col justify-between">
                     <div className="space-y-6">
                         <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm">
                             <Search size={28} className="text-black/30" />

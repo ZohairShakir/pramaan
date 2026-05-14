@@ -44,7 +44,7 @@ export default async function UserLockerPage() {
       {/* Background Accents */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#F2E6E1]/30 rounded-full blur-[100px] -mr-48 -mt-48 pointer-events-none" />
 
-      <main className="pt-32 md:pt-48 pb-32 px-6 max-w-7xl mx-auto space-y-24 relative z-10">
+       <main className="pt-20 md:pt-32 pb-20 px-4 max-w-7xl mx-auto space-y-24 relative z-10">
         
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-12">

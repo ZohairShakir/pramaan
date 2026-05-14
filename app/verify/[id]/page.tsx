@@ -148,7 +148,7 @@ export default async function VerificationPage({ params }: VerificationPageProps
     <div className="min-h-screen bg-white text-black selection:bg-lime selection:text-black">
       <Navbar />
 
-      <main className="pt-32 md:pt-48 pb-24 px-6 max-w-7xl mx-auto">
+      <main className="pt-32 md:pt-48 pb-32 px-6 max-w-7xl mx-auto">
         <div className="space-y-12">
             <Link href="/verify" className="inline-flex items-center text-black/40 hover:text-black transition-colors text-xs font-bold tracking-widest gap-2 uppercase">
               <ArrowLeft size={14} />
@@ -157,7 +157,7 @@ export default async function VerificationPage({ params }: VerificationPageProps
 
             <div className="bg-white rounded-[4rem] border border-black/5 overflow-hidden shadow-2xl">
                 {/* Hero Status Banner */}
-                <div className={cn("p-12 md:p-24 lg:p-32 text-center space-y-8 md:space-y-10 relative overflow-hidden", statusConfig.bg)}>
+                <div className={cn("p-8 md:p-24 lg:p-32 text-center space-y-6 md:space-y-10 relative overflow-hidden", statusConfig.bg)}>
                     <div className="w-24 h-24 md:w-32 md:h-32 rounded-[2.5rem] bg-white flex items-center justify-center mx-auto shadow-2xl relative z-10 animate-in zoom-in duration-700">
                         <div className={statusConfig.accentColor}>{statusConfig.icon}</div>
                     </div>
@@ -175,12 +175,12 @@ export default async function VerificationPage({ params }: VerificationPageProps
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#3D541D08,transparent_70%)] pointer-events-none" />
                 </div>
 
-                {/* Content Grid */}
-                <div className="p-8 md:p-12 lg:p-20 space-y-16 md:space-y-20">
+             {/* Content Grid */}
+             <div className="p-6 md:p-8 lg:p-12 space-y-12 md:space-y-16">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
                         {/* Visual Proof Section */}
-                        <div className="space-y-12">
-                            <div className="p-12 bg-[#F8F8F8] rounded-[3.5rem] border border-black/5 flex items-center justify-center group relative overflow-hidden aspect-square">
+                        <div className="space-y-8 md:space-y-12">
+                            <div className="p-6 md:p-12 bg-[#F8F8F8] rounded-[2.5rem] md:rounded-[3.5rem] border border-black/5 flex items-center justify-center group relative overflow-hidden aspect-square">
                                 <div className="relative z-10 flex flex-col items-center gap-8">
                                     <Logo size={120} className="opacity-10 group-hover:opacity-100 transition-all duration-700 scale-90 group-hover:scale-100" />
                                     <div className="text-center space-y-2">
@@ -223,32 +223,32 @@ export default async function VerificationPage({ params }: VerificationPageProps
                                     <span className="text-[10px] font-bold uppercase tracking-widest text-black/30 flex items-center gap-2">
                                         <FileText size={12} /> Registry Entry
                                     </span>
-                                    <h2 className="text-4xl md:text-7xl font-bold tracking-tight leading-tight">{data.name}</h2>
-                                    <div className="flex gap-3">
-                                        <span className="px-4 py-1.5 bg-black/5 rounded-full text-[10px] font-bold uppercase tracking-widest">ID: {data.id.slice(0, 8).toUpperCase()}</span>
-                                        <span className="px-4 py-1.5 bg-black/5 rounded-full text-[10px] font-bold uppercase tracking-widest">{data.category}</span>
+                                    <h2 className="text-3xl md:text-7xl font-bold tracking-tight leading-tight">{data.name}</h2>
+                                    <div className="flex flex-wrap gap-2">
+                                        <span className="px-3 py-1 bg-black/5 rounded-full text-[9px] font-bold uppercase tracking-widest">ID: {data.id.slice(0, 8).toUpperCase()}</span>
+                                        <span className="px-3 py-1 bg-black/5 rounded-full text-[9px] font-bold uppercase tracking-widest">{data.category}</span>
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-12 pt-10 border-t border-black/5">
-                                    <div className="space-y-3">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 pt-8 md:pt-10 border-t border-black/5">
+                                    <div className="space-y-2">
                                         <span className="text-[10px] font-bold uppercase tracking-widest text-black/30">Issuer Authority</span>
-                                        <p className="text-xl font-bold">{(data.user as any)?.organizationName || "Pramaan Institution"}</p>
+                                        <p className="text-lg md:text-xl font-bold">{(data.user as any)?.organizationName || "Pramaan Institution"}</p>
                                     </div>
-                                    <div className="space-y-3">
+                                    <div className="space-y-2">
                                         <span className="text-[10px] font-bold uppercase tracking-widest text-black/30">Authorized Recipient</span>
-                                        <p className="text-xl font-bold">{data.recipientName || "Public Record"}</p>
+                                        <p className="text-lg md:text-xl font-bold">{data.recipientName || "Public Record"}</p>
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-12">
-                                    <div className="space-y-3">
+                                <div className="grid grid-cols-2 gap-8 md:gap-12">
+                                    <div className="space-y-2">
                                         <span className="text-[10px] font-bold uppercase tracking-widest text-black/30">Genesis Date</span>
-                                        <p className="text-lg font-bold">{new Date(data.verifiedAt!).toLocaleDateString('en-IN', { dateStyle: 'long' })}</p>
+                                        <p className="text-base md:text-lg font-bold">{new Date(data.verifiedAt!).toLocaleDateString('en-IN', { dateStyle: 'medium' })}</p>
                                     </div>
-                                    <div className="space-y-3">
+                                    <div className="space-y-2 text-right md:text-left">
                                         <span className="text-[10px] font-bold uppercase tracking-widest text-black/30">Total Audits</span>
-                                        <p className="text-lg font-bold">{data.verificationCount} Records</p>
+                                        <p className="text-base md:text-lg font-bold">{data.verificationCount} Records</p>
                                     </div>
                                 </div>
                             </div>

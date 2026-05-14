@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Mail, Lock, User, Loader2, ArrowLeft, AlertCircle, ShieldCheck, Upload, CheckCircle2, KeyRound } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { Logo } from '@/components/Logo';
 
 type SignupStep = 'IDENTITY' | 'DOCUMENTS' | 'OTP' | 'SUCCESS';
 
@@ -18,6 +19,7 @@ export default function SignupPage() {
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [correctOtp, setCorrectOtp] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -42,11 +44,24 @@ export default function SignupPage() {
 
   const sendOTP = async () => {
     setIsLoading(true);
-    // Mocking OTP send
-    setTimeout(() => {
-      setIsLoading(false);
+    setError(null);
+    try {
+      const res = await fetch('/api/auth/otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to send OTP');
+      
+      setCorrectOtp(data.code);
       toast.success(`Verification code sent to ${email}`);
-    }, 1500);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'OTP dispatch failed');
+      toast.error("Critical error in identity validation.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleOtpChange = (index: number, value: string) => {
@@ -73,6 +88,14 @@ export default function SignupPage() {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+
+    // Verify OTP locally
+    const enteredOtp = otp.join('');
+    if (enteredOtp !== correctOtp) {
+      setError('Invalid identity code. Please check your institutional email.');
+      setIsLoading(false);
+      return;
+    }
 
     try {
       // In a real app, we would verify OTP and upload document here
@@ -101,11 +124,12 @@ export default function SignupPage() {
       {/* Left: Branding & Visual */}
       <div className="hidden md:flex md:w-[40%] bg-black p-12 flex-col justify-between relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#F2E6E110,transparent_70%)] pointer-events-none" />
+        <div className="absolute -bottom-20 -left-20 opacity-[0.07] pointer-events-none">
+          <Logo size={600} />
+        </div>
 
         <Link href="/" className="flex items-center gap-2 group z-10">
-          <div className="w-8 h-8 rounded-lg bg-white text-black flex items-center justify-center font-bold">
-            P
-          </div>
+          <Logo size={40} />
           <span className="text-white font-bold text-xl tracking-tight">Pramaan</span>
         </Link>
 

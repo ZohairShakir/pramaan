@@ -12,7 +12,7 @@ import {
   Loader2, ArrowRight, Hash, User, Building, QrCode, 
   Download, RotateCcw, AlertCircle, Eye, Zap, 
   Fingerprint as FingerIcon, Globe, Sparkles, Lock,
-  Share2
+  Share2, Mail
 } from 'lucide-react';
 import QRSection from '@/components/QRSection';
 import DocumentPreviewWrapper from '@/components/DocumentPreviewWrapper';
@@ -29,6 +29,7 @@ export default function CreateProofPage() {
   const [error, setError] = useState<string | null>(null);
   const [issuerOrg, setIssuerOrg] = useState('');
   const [recipient, setRecipient] = useState('');
+  const [recipientEmail, setRecipientEmail] = useState('');
   const [category, setCategory] = useState('Education');
 
   useEffect(() => {
@@ -103,6 +104,7 @@ export default function CreateProofPage() {
       formData.append('category', category);
       if (issuerOrg) formData.append('issuerOrg', issuerOrg);
       if (recipient) formData.append('recipientName', recipient);
+      if (recipientEmail) formData.append('recipientEmail', recipientEmail);
 
       const response = await fetch('/api/proof', {
         method: 'POST',
@@ -132,13 +134,14 @@ export default function CreateProofPage() {
     setFile(null);
     setIssuerOrg('');
     setRecipient('');
+    setRecipientEmail('');
   };
 
   return (
     <div className="min-h-screen bg-white text-black selection:bg-lime selection:text-black relative overflow-hidden">
       <Navbar />
       
-      <main className="pt-32 md:pt-48 pb-24 px-6 relative z-10">
+       <main className="pt-20 md:pt-32 pb-16 md:pb-24 px-4 relative z-10">
         <AnimatePresence mode="wait">
           {!proof ? (
             <motion.div 
@@ -262,6 +265,19 @@ export default function CreateProofPage() {
                                         className="w-full pl-16 pr-8 py-5 rounded-2xl bg-white border border-black/5 focus:border-black/20 transition-all text-sm font-bold text-black placeholder:text-black/10 outline-none"
                                         value={recipient}
                                         onChange={(e) => setRecipient(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                            <div className="space-y-3">
+                                <label className="text-[10px] font-bold uppercase tracking-widest text-black/30 ml-2">Recipient Email (Delivery Path)</label>
+                                <div className="relative group">
+                                    <Mail size={18} className="absolute left-6 top-1/2 -translate-y-1/2 text-black/20 group-focus-within:text-black transition-colors" />
+                                    <input 
+                                        type="email" 
+                                        placeholder="name@example.com" 
+                                        className="w-full pl-16 pr-8 py-5 rounded-2xl bg-white border border-black/5 focus:border-black/20 transition-all text-sm font-bold text-black placeholder:text-black/10 outline-none"
+                                        value={recipientEmail}
+                                        onChange={(e) => setRecipientEmail(e.target.value)}
                                     />
                                 </div>
                             </div>

@@ -146,186 +146,174 @@ export default function OCRScanner({ onScanComplete, onClose }: OCRScannerProps)
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/40 backdrop-blur-xl"
+      className="fixed inset-0 z-[100] bg-black flex flex-col overflow-hidden"
     >
-      <motion.div 
-        initial={{ scale: 0.9, y: 20 }}
-        animate={{ scale: 1, y: 0 }}
-        className="w-full max-w-5xl h-full md:h-auto max-h-[95vh] bg-white rounded-[2.5rem] md:rounded-[4rem] shadow-[0_100px_150px_-50px_rgba(0,0,0,0.3)] border border-black/5 overflow-hidden relative flex flex-col"
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 md:p-10 border-b border-black/5 bg-[#F2E6E1]/30">
-          <div className="flex items-center gap-5">
-            <div className="w-12 h-12 rounded-2xl bg-black text-lime flex items-center justify-center">
-              <Sparkles size={24} />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold tracking-tight uppercase">Spectral Scanner</h2>
-              <p className="text-[10px] font-bold text-black/30 uppercase tracking-[0.4em]">AI-Powered OCR Node v2.1</p>
-            </div>
+      {/* Top Header Controls */}
+      <div className="absolute top-0 left-0 right-0 p-8 flex items-center justify-between z-50">
+        <div className="flex items-center gap-4 text-white">
+          <div className="w-10 h-10 rounded-xl bg-lime text-black flex items-center justify-center shadow-2xl">
+            <Sparkles size={20} />
           </div>
-          <button onClick={onClose} className="w-12 h-12 rounded-full hover:bg-black/5 flex items-center justify-center text-black/40 transition-colors">
-            <X size={24} />
-          </button>
+          <div>
+            <h2 className="text-lg font-bold tracking-tight uppercase leading-none">Spectral Scanner</h2>
+            <p className="text-[8px] font-bold text-white/30 uppercase tracking-[0.4em] mt-1">AI Node v2.4</p>
+          </div>
         </div>
+        
+        <button 
+          onClick={onClose} 
+          className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/20 transition-all active:scale-90"
+        >
+          <X size={24} />
+        </button>
+      </div>
 
-        <div className="p-6 md:p-10 grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 overflow-y-auto">
-          {/* Left: Viewport */}
-          <div className="relative aspect-[4/5] bg-black/[0.02] rounded-[3rem] border-2 border-dashed border-black/5 overflow-hidden flex items-center justify-center group shadow-inner">
-            {showCamera ? (
-              <div className="absolute inset-0">
-                <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
-                <div className="absolute inset-0 border-[60px] border-black/40 pointer-events-none">
-                   <div className="w-full h-full border-2 border-white/50 rounded-[2rem] relative">
-                      <div className="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-lime rounded-tl-3xl" />
-                      <div className="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-lime rounded-tr-3xl" />
-                      <div className="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-lime rounded-bl-3xl" />
-                      <div className="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-lime rounded-br-3xl" />
-                   </div>
-                </div>
-                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-4">
-                  <button className="rounded-2xl bg-black text-white h-16 px-10 font-bold text-sm shadow-2xl" onClick={capturePhoto}>
-                    Capture Record
-                  </button>
-                  <button className="h-16 w-16 rounded-2xl bg-white text-black border border-black/10 flex items-center justify-center hover:bg-black hover:text-white transition-all" onClick={stopCamera}>
-                    <X size={20} />
-                  </button>
-                </div>
-              </div>
-            ) : image ? (
-              <div className="relative w-full h-full">
-                <img src={image} alt="Scanned Record" className="w-full h-full object-cover" />
-                
-                {isProcessing && (
-                  <motion.div 
-                    initial={{ top: '0%' }}
-                    animate={{ top: '100%' }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                    className="absolute left-0 right-0 h-1.5 bg-lime shadow-[0_0_30px_rgba(202,255,0,0.5)] z-10"
-                  />
-                )}
-                
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
-                  <button className="bg-white text-black px-8 py-4 rounded-2xl font-bold text-xs flex items-center gap-2" onClick={() => { setImage(null); setExtractedData(null); }}>
-                    <RotateCcw size={16} /> Retake Genesis
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center gap-8 text-center px-12">
-                <div className="w-24 h-24 rounded-[2.5rem] bg-white shadow-2xl flex items-center justify-center text-black/10">
-                  <FileText size={48} />
-                </div>
-                <div className="space-y-3">
-                  <h3 className="text-3xl font-bold tracking-tight uppercase">Awaiting Sensor</h3>
-                  <p className="text-[10px] text-black/30 uppercase tracking-[0.3em] leading-relaxed">Position your physical asset <br />within the cryptographic bounds</p>
-                </div>
-                <div className="flex gap-4">
-                  <button className="bg-black text-white px-8 py-4 rounded-2xl font-bold text-xs flex items-center gap-2 shadow-xl shadow-black/10 hover:scale-105 transition-transform" onClick={startCamera}>
-                    <Camera size={16} /> Open Sensor
-                  </button>
-                  <button className="bg-white text-black border border-black/10 px-8 py-4 rounded-2xl font-bold text-xs flex items-center gap-2 hover:bg-black hover:text-white transition-all" onClick={() => fileInputRef.current?.click()}>
-                    <Upload size={16} /> Upload Image
-                  </button>
-                  <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileUpload} />
-                </div>
-              </div>
-            )}
-            <canvas ref={canvasRef} className="hidden" />
-          </div>
-
-          {/* Right: Analysis */}
-          <div className="flex flex-col h-full space-y-10">
-            <div className="flex-1 space-y-10">
-              {isProcessing ? (
-                <div className="h-full flex flex-col items-center justify-center text-center space-y-8">
-                  <div className="relative">
-                    <Loader2 className="w-20 h-20 animate-spin text-lime opacity-30" />
-                    <Logo size={40} className="absolute inset-0 m-auto" />
-                  </div>
-                  <div className="space-y-3">
-                    <p className="text-xl font-bold uppercase tracking-widest">{status}</p>
-                    <div className="w-56 h-1 bg-black/5 rounded-full overflow-hidden mx-auto">
-                      <motion.div 
-                        initial={{ width: 0 }}
-                        animate={{ width: `100%` }}
-                        transition={{ duration: 5 }}
-                        className="h-full bg-black"
-                      />
-                    </div>
-                  </div>
-                </div>
-              ) : extractedData ? (
-                <motion.div 
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className="space-y-10"
-                >
-                  <div className="p-8 rounded-[2.5rem] bg-[#F2E6E1]/30 border border-black/5 space-y-6">
-                    <div className="flex items-center gap-3 text-black">
-                      <Zap size={16} className="text-lime" />
-                      <span className="text-[11px] font-bold uppercase tracking-[0.3em]">AI Intelligence Node</span>
-                    </div>
+      <div className="relative flex-1 flex flex-col">
+        {/* Viewport Area */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          {showCamera ? (
+            <div className="relative w-full h-full">
+              <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
+              
+              {/* Target Frame Overlay */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                 <div className="w-[85vw] h-[60vh] md:w-[600px] md:h-[400px] border-2 border-white/20 rounded-[2rem] relative">
+                    <div className="absolute -top-1 -left-1 w-16 h-16 border-t-8 border-l-8 border-lime rounded-tl-[2rem]" />
+                    <div className="absolute -top-1 -right-1 w-16 h-16 border-t-8 border-r-8 border-lime rounded-tr-[2rem]" />
+                    <div className="absolute -bottom-1 -left-1 w-16 h-16 border-b-8 border-l-8 border-lime rounded-bl-[2rem]" />
+                    <div className="absolute -bottom-1 -right-1 w-16 h-16 border-b-8 border-r-8 border-lime rounded-br-[2rem]" />
                     
-                    <div className="space-y-6">
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-black/30 uppercase tracking-widest ml-1">Suggested Issuer</label>
-                        <div className="p-5 rounded-2xl bg-white border border-black/5 text-sm font-bold text-black truncate italic">
-                          {extractedData.issuer || 'Undetermined Entity'}
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-black/30 uppercase tracking-widest ml-1">Detected Recipient</label>
-                        <div className="p-5 rounded-2xl bg-white border border-black/5 text-sm font-bold text-black truncate italic">
-                          {extractedData.recipient || 'Undetermined Subject'}
-                        </div>
-                      </div>
-                      {extractedData.documentId && (
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-bold text-black/30 uppercase tracking-widest ml-1">Registry ID Match</label>
-                          <div className="p-5 rounded-2xl bg-black text-white text-xs font-mono truncate tracking-widest">
-                            #{extractedData.documentId.toUpperCase()}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-2">
-                        <Search size={14} className="text-black/30" />
-                        <label className="text-[10px] font-bold text-black/30 uppercase tracking-widest">Raw Spectral Data</label>
-                    </div>
-                    <div className="h-48 overflow-y-auto p-6 rounded-3xl bg-black text-white/40 text-[11px] font-mono whitespace-pre-wrap leading-relaxed shadow-inner">
-                      {extractedData.rawText}
-                    </div>
-                  </div>
-                </motion.div>
-              ) : (
-                <div className="h-full flex flex-col items-center justify-center text-center space-y-6 text-black/20">
-                  <Shield size={64} className="opacity-[0.03]" />
-                  <p className="text-[11px] font-bold uppercase tracking-[0.3em]">Awaiting Spectral Analysis</p>
-                </div>
-              )}
+                    {/* Scanning Line */}
+                    <motion.div 
+                      animate={{ top: ['0%', '100%', '0%'] }}
+                      transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                      className="absolute left-4 right-4 h-1 bg-lime/40 blur-sm z-10"
+                    />
+                 </div>
+              </div>
             </div>
-
-            <div className="pt-10 border-t border-black/5">
-              <button 
-                className="w-full h-20 rounded-[1.5rem] bg-black text-white font-bold text-lg hover:bg-black/90 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-2xl flex items-center justify-center gap-4 group"
-                disabled={!extractedData || isProcessing}
-                onClick={() => extractedData && onScanComplete(extractedData as any)}
-              >
-                <CheckCircle2 size={24} className="text-lime" />
-                <span className="tracking-tight">Inject into Registry</span>
-              </button>
-              <p className="text-center mt-6 text-[10px] font-bold text-black/20 uppercase tracking-widest flex items-center justify-center gap-3">
-                  <Lock size={12} />
-                  ZK-Encrypted Channel
-              </p>
+          ) : image ? (
+            <div className="w-full h-full relative">
+              <img src={image} alt="Scanned Record" className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-black/40" />
             </div>
-          </div>
+          ) : (
+            <div className="flex flex-col items-center gap-10 text-center px-12 z-10">
+              <div className="w-24 h-24 rounded-[3rem] bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center text-white/20">
+                <FileText size={40} />
+              </div>
+              <div className="space-y-4">
+                <h3 className="text-3xl font-bold tracking-tight uppercase text-white">Awaiting Genesis</h3>
+                <p className="text-[10px] text-white/30 uppercase tracking-[0.4em] leading-relaxed">Position asset within the <br />cryptographic bounds</p>
+              </div>
+              <div className="flex flex-col gap-4 w-full max-w-xs">
+                <button className="bg-lime text-black h-20 rounded-[1.5rem] font-bold text-lg flex items-center justify-center gap-3 shadow-2xl shadow-lime/20" onClick={startCamera}>
+                  <Camera size={24} /> Initialize Lens
+                </button>
+                <button className="bg-white/5 backdrop-blur-md text-white h-20 rounded-[1.5rem] font-bold text-sm border border-white/10" onClick={() => fileInputRef.current?.click()}>
+                  Upload Record
+                </button>
+                <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileUpload} />
+              </div>
+            </div>
+          )}
         </div>
-      </motion.div>
+
+        {/* Action Bar (Bottom) */}
+        <div className="absolute bottom-0 left-0 right-0 p-12 flex flex-col items-center z-50">
+           {showCamera && (
+             <div className="flex flex-col items-center gap-8">
+               <div className="text-white/40 text-[10px] font-bold uppercase tracking-[0.4em]">Stabilize to Capture</div>
+               <button 
+                 onClick={capturePhoto}
+                 className="w-24 h-24 rounded-full bg-white flex items-center justify-center shadow-[0_0_50px_rgba(255,255,255,0.3)] border-[8px] border-white/20 active:scale-90 transition-all group"
+               >
+                 <div className="w-16 h-16 rounded-full bg-black group-hover:scale-95 transition-transform" />
+               </button>
+             </div>
+           )}
+
+           {image && !isProcessing && !extractedData && (
+              <div className="flex gap-4">
+                 <button className="bg-white text-black h-16 px-10 rounded-2xl font-bold" onClick={() => { setImage(null); startCamera(); }}>
+                    Retake
+                 </button>
+                 <button className="bg-lime text-black h-16 px-10 rounded-2xl font-bold" onClick={() => processImage(image)}>
+                    Analyze
+                 </button>
+              </div>
+           )}
+
+           {isProcessing && (
+              <div className="bg-black/80 backdrop-blur-2xl border border-white/10 rounded-[3rem] p-10 w-full max-w-lg space-y-8 animate-in fade-in slide-in-from-bottom-10">
+                 <div className="flex items-center gap-6">
+                    <Loader2 className="w-10 h-10 animate-spin text-lime" />
+                    <div>
+                       <p className="text-white font-bold text-lg uppercase tracking-tight">{status}</p>
+                       <p className="text-white/30 text-[10px] font-bold uppercase tracking-[0.4em] mt-1">Spectral Audit in Progress</p>
+                    </div>
+                 </div>
+                 <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                    <motion.div 
+                      initial={{ width: 0 }}
+                      animate={{ width: '100%' }}
+                      transition={{ duration: 5 }}
+                      className="h-full bg-lime shadow-[0_0_15px_rgba(202,255,0,0.5)]"
+                    />
+                 </div>
+              </div>
+           )}
+
+           {extractedData && !isProcessing && (
+              <div className="bg-white rounded-[3rem] p-10 w-full max-w-2xl space-y-10 animate-in fade-in slide-in-from-bottom-20 shadow-2xl">
+                 <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                       <h4 className="text-2xl font-bold tracking-tight text-black uppercase">Analysis Success</h4>
+                       <p className="text-[10px] font-bold text-black/30 uppercase tracking-[0.4em]">Neural Extraction Complete</p>
+                    </div>
+                    <button onClick={() => { setImage(null); setExtractedData(null); startCamera(); }} className="w-12 h-12 rounded-full bg-black/5 flex items-center justify-center text-black">
+                       <RotateCcw size={20} />
+                    </button>
+                 </div>
+
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-2">
+                       <label className="text-[9px] font-bold text-black/30 uppercase tracking-widest ml-1">Issuer</label>
+                       <div className="p-5 rounded-2xl bg-[#F8F8F8] border border-black/5 text-sm font-bold text-black truncate">
+                          {extractedData.issuer || 'Unknown Authority'}
+                       </div>
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-[9px] font-bold text-black/30 uppercase tracking-widest ml-1">Recipient</label>
+                       <div className="p-5 rounded-2xl bg-[#F8F8F8] border border-black/5 text-sm font-bold text-black truncate">
+                          {extractedData.recipient || 'Public Record'}
+                       </div>
+                    </div>
+                 </div>
+
+                 {extractedData.documentId && (
+                   <div className="p-6 rounded-[1.5rem] bg-black text-white flex items-center justify-between">
+                      <div>
+                         <p className="text-[8px] font-bold text-white/30 uppercase tracking-widest">Registry ID Match</p>
+                         <p className="text-sm font-mono tracking-widest mt-1">#{extractedData.documentId.toUpperCase()}</p>
+                      </div>
+                      <ShieldCheck size={24} className="text-lime" />
+                   </div>
+                 )}
+
+                 <button 
+                   onClick={() => onScanComplete(extractedData as any)}
+                   className="w-full h-20 bg-lime text-black rounded-[1.5rem] font-bold text-lg shadow-2xl shadow-lime/20 flex items-center justify-center gap-4 hover:scale-[1.02] transition-transform"
+                 >
+                   <CheckCircle2 size={24} />
+                   Inject into Registry
+                 </button>
+              </div>
+           )}
+        </div>
+      </div>
+      
+      <canvas ref={canvasRef} className="hidden" />
     </motion.div>
   );
 }

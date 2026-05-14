@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import crypto from 'crypto';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/authOptions';
+import { sendProofEmail } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
   try {
@@ -64,6 +65,23 @@ export async function POST(request: NextRequest) {
         }
       },
     });
+
+    // 7. Send Proof Email if recipient email exists
+    if (recipientEmail) {
+        try {
+            const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+            await sendProofEmail({
+                to: recipientEmail,
+                recipientName: recipientName || 'Public Holder',
+                issuerName: (session.user as any)?.organizationName || session.user.name || 'Institutional Node',
+                documentName: file.name,
+                verifyUrl: `${baseUrl}/verify/${document.id}`,
+                registryId: document.id,
+            });
+        } catch (e) {
+            console.error("Failed to send proof email:", e);
+        }
+    }
 
     // Simulate blockchain data for response
     const txHash = '0x' + crypto.randomBytes(32).toString('hex');
