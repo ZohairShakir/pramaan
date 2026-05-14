@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, Upload, Loader2, CheckCircle2, X, 
-  RotateCcw, Sparkles, FileText, Zap, Shield, Search
+  RotateCcw, Sparkles, FileText, Zap, Shield, Search, Lock
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
