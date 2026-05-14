@@ -7,8 +7,9 @@ import { Camera, Upload, Loader2, CheckCircle2, X,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { scanDocument } from '@/lib/ocr';
+import { scanDocument, enhanceImage } from '@/lib/ocr';
 import { Logo } from '@/components/Logo';
+import jsQR from 'jsqr';
 
 interface OCRScannerProps {
   onScanComplete: (data: { issuer?: string; recipient?: string; documentId?: string; rawText: string }) => void;
@@ -94,13 +95,43 @@ export default function OCRScanner({ onScanComplete, onClose }: OCRScannerProps)
     setStatus('Initializing Neural Engine...');
 
     try {
-      const result = await scanDocument(dataUrl);
-      
-      const idPattern = /(pr_[a-z0-9]+|[a-f0-9]{32,64})/i;
-      const idMatch = result.rawText.match(idPattern);
-      const documentId = idMatch ? idMatch[0] : '';
+      // 1. Pre-process image for better accuracy
+      let processedUrl = dataUrl;
+      if (canvasRef.current) {
+        processedUrl = await enhanceImage(canvasRef.current);
+        setImage(processedUrl);
+      }
 
-      setExtractedData({ ...result, documentId });
+      // 2. High-speed QR Check (Gold Standard)
+      if (canvasRef.current) {
+        const ctx = canvasRef.current.getContext('2d');
+        if (ctx) {
+          const imageData = ctx.getImageData(0, 0, canvasRef.current.width, canvasRef.current.height);
+          const code = jsQR(imageData.data, imageData.width, imageData.height);
+          if (code) {
+            setStatus('Found Signature QR...');
+            const url = code.data;
+            // Extract ID from URL if it's a verify link
+            const idMatch = url.match(/\/verify\/([a-z0-9-]+)/i);
+            const documentId = idMatch ? idMatch[1] : url;
+            
+            setExtractedData({ 
+                rawText: `QR_DATA: ${url}`, 
+                documentId: documentId,
+                issuer: 'QR Verified Authority'
+            });
+            setStatus('Scan Complete');
+            setIsProcessing(false);
+            return;
+          }
+        }
+      }
+
+      // 3. Spectral OCR Fallback
+      setStatus('Analyzing Spectral Data...');
+      const result = await scanDocument(processedUrl);
+      
+      setExtractedData(result);
       setStatus('Scan Complete');
     } catch (err) {
       console.error('OCR Error:', err);

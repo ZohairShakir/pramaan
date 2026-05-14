@@ -1,4 +1,13 @@
-import { createWorker } from 'tesseract.js';
+import { createWorker, Worker } from 'tesseract.js';
+
+let sharedWorker: Worker | null = null;
+
+async function getWorker() {
+  if (!sharedWorker) {
+    sharedWorker = await createWorker('eng');
+  }
+  return sharedWorker;
+}
 
 /**
  * Validates if a string looks like a person's name (short, mostly capitalized words, no common verbs)
@@ -26,8 +35,8 @@ function isPotentialName(text: string): boolean {
   return true;
 }
 
-export async function scanDocument(imageSource: string | File): Promise<{ issuer?: string; recipient?: string; rawText: string }> {
-  const worker = await createWorker('eng', 1);
+export async function scanDocument(imageSource: string | File): Promise<{ issuer?: string; recipient?: string; documentId?: string; rawText: string }> {
+  const worker = await getWorker();
   
   const { data: { text } } = await worker.recognize(imageSource);
   
@@ -35,25 +44,30 @@ export async function scanDocument(imageSource: string | File): Promise<{ issuer
   
   let issuer = '';
   let recipient = '';
+  let documentId = '';
 
-  const nameIndicators = ['certifies that', 'presented to', 'name:', 'this is to certify', 'awarded to', 'proudly presented to'];
+  // 1. Aggressive Registry ID detection
+  const idPattern = /(PR_[0-9A-Z]{4,})|([0-9a-f]{32,64})/i;
+  const idMatch = text.match(idPattern);
+  if (idMatch) {
+    documentId = idMatch[0].toUpperCase();
+  }
+
+  const nameIndicators = ['certifies that', 'presented to', 'name:', 'this is to certify', 'awarded to', 'proudly presented to', 'of completion to'];
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].toLowerCase();
     
-    // 1. Better Issuer Detection
-    if (!issuer && (line.includes('university') || line.includes('institute') || line.includes('corp') || line.includes('board') || line.includes('company') || line.includes('academy') || line.includes('school'))) {
+    // 2. Improved Issuer Detection
+    if (!issuer && (line.includes('university') || line.includes('institute') || line.includes('corp') || line.includes('board') || line.includes('company') || line.includes('academy') || line.includes('school') || line.includes('network'))) {
       issuer = lines[i];
     }
     
-    // 2. Sophisticated Recipient Detection
+    // 3. Sophisticated Recipient Detection
     for (const indicator of nameIndicators) {
       if (line.includes(indicator)) {
-        // Check same line first (e.g. "This certifies that John Doe")
         const index = line.indexOf(indicator);
         const afterIndicator = lines[i].substring(index + indicator.length).trim();
-        
-        // Remove common filler words after indicator
         const cleanedAfter = afterIndicator.replace(/^(that|is|was|to)\s+/i, '').trim();
         
         if (isPotentialName(cleanedAfter)) {
@@ -61,7 +75,6 @@ export async function scanDocument(imageSource: string | File): Promise<{ issuer
           break;
         }
 
-        // Check next 3 lines for the name
         for (let offset = 1; offset <= 3; offset++) {
           const nextLine = lines[i + offset];
           if (nextLine && isPotentialName(nextLine)) {
@@ -74,11 +87,10 @@ export async function scanDocument(imageSource: string | File): Promise<{ issuer
     }
   }
 
-  // Fallbacks with stricter checks
+  // Fallbacks
   if (!issuer && lines.length > 0) {
-    // Usually the issuer is at the top
     for (let i = 0; i < Math.min(3, lines.length); i++) {
-       if (lines[i].length < 50 && !isPotentialName(lines[i])) { // Issuers are often longer/official
+       if (lines[i].length < 60 && !isPotentialName(lines[i])) {
           issuer = lines[i];
           break;
        }
@@ -86,18 +98,37 @@ export async function scanDocument(imageSource: string | File): Promise<{ issuer
   }
 
   if (!recipient) {
-    // Look for lines that look like names but weren't caught by indicators
     for (const line of lines) {
-      if (isPotentialName(line) && line.length > 5) {
+      if (isPotentialName(line) && line.length > 5 && line.length < 40) {
         recipient = line;
         break;
       }
     }
   }
 
-  await worker.terminate();
-  
-  return { issuer, recipient, rawText: text };
+  return { issuer, recipient, documentId, rawText: text };
+}
+
+export async function enhanceImage(canvas: HTMLCanvasElement): Promise<string> {
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return canvas.toDataURL();
+
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const data = imageData.data;
+
+  // Grayscale + Contrast
+  for (let i = 0; i < data.length; i += 4) {
+    const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+    // Boost contrast
+    const contrast = 1.2;
+    const factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
+    const newVal = factor * (avg - 128) + 128;
+    
+    data[i] = data[i + 1] = data[i + 2] = newVal;
+  }
+
+  ctx.putImageData(imageData, 0, 0);
+  return canvas.toDataURL('image/png', 1.0);
 }
 
 /**
