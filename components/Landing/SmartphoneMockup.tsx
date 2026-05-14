@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
 
-export type PhoneScreen = "dashboard" | "locker" | "registering" | "verified";
+export type PhoneScreen = "dashboard" | "locker" | "registering" | "verified" | "verifying" | "industry";
 
 interface SmartphoneMockupProps {
   screen: PhoneScreen;
@@ -108,6 +108,79 @@ export const SmartphoneMockup: React.FC<SmartphoneMockupProps> = ({ screen, clas
                    <Layers size={20} className="text-black/10" />
                    <Globe size={20} className="text-black/10" />
                    <div className="w-10 h-10 rounded-2xl bg-black/5" />
+                </div>
+              </motion.div>
+            )}
+
+            {screen === "verifying" && (
+              <motion.div 
+                key="verifying"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="h-full flex flex-col items-center justify-center p-8 bg-[#F2E6E1]/30"
+              >
+                <div className="relative">
+                    <div className="w-32 h-32 rounded-full border-2 border-black/5 flex items-center justify-center">
+                        <motion.div 
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                            className="absolute inset-0 border-t-2 border-black rounded-full"
+                        />
+                        <Search size={40} className="text-black/20" />
+                    </div>
+                </div>
+                <div className="mt-12 text-center space-y-2">
+                    <p className="text-2xl font-bold uppercase tracking-tighter">Auditing.</p>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.4em] opacity-30">Spectral Genesis Scan</p>
+                </div>
+              </motion.div>
+            )}
+
+            {screen === "industry" && (
+              <motion.div 
+                key="industry"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="h-full p-8 pt-16 bg-white"
+              >
+                <div className="space-y-12">
+                    <div className="flex items-center justify-between">
+                        <h4 className="text-3xl font-bold uppercase tracking-tight">Sync.</h4>
+                        <div className="w-10 h-10 rounded-xl bg-black text-lime flex items-center justify-center">
+                            <Globe size={20} />
+                        </div>
+                    </div>
+                    
+                    <div className="space-y-6">
+                        {[1, 2, 3].map(i => (
+                            <div key={i} className="p-5 rounded-2xl bg-[#F8F8F8] border border-black/5 flex items-center gap-4">
+                                <div className="w-8 h-8 rounded-lg bg-black/5 flex items-center justify-center">
+                                    <Shield size={16} className="text-black/20" />
+                                </div>
+                                <div className="flex-1 space-y-1">
+                                    <div className="h-2 w-24 bg-black/10 rounded-full" />
+                                    <div className="h-1.5 w-16 bg-black/5 rounded-full" />
+                                </div>
+                                <CheckCircle2 size={16} className="text-lime" />
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="p-8 rounded-[2.5rem] bg-black text-white space-y-4">
+                        <p className="text-[10px] font-bold uppercase tracking-widest opacity-30">Node Throughput</p>
+                        <div className="flex items-end gap-1 h-12">
+                            {[0.4, 0.7, 0.5, 0.9, 0.6, 0.8, 0.4].map((h, i) => (
+                                <motion.div 
+                                    key={i}
+                                    initial={{ height: 0 }}
+                                    animate={{ height: `${h * 100}%` }}
+                                    className="flex-1 bg-lime rounded-t-sm"
+                                />
+                            ))}
+                        </div>
+                    </div>
                 </div>
               </motion.div>
             )}
