@@ -7,15 +7,17 @@ interface QRSectionProps {
   url?: string;
   size?: number;
   hideDescription?: boolean;
+  className?: string;
 }
 
 export default function QRSection({ 
   url = 'https://pramaan.io/verify', 
   size = 200, 
-  hideDescription = false 
+  hideDescription = false,
+  className
 }: QRSectionProps) {
   return (
-    <div className="flex flex-col items-center gap-8">
+    <div className={cn("flex flex-col items-center gap-8", className)}>
       <div className="p-6 bg-white rounded-3xl shadow-3xl border border-brand-neutral relative group overflow-hidden">
         <QRCodeSVG value={url} size={size} level="H" includeMargin={true} fgColor="#2E4A1F" />
         <div className="absolute inset-0 bg-brand-forest/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
