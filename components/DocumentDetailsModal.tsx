@@ -14,11 +14,35 @@ interface Props {
     id: string;
     fileUrl?: string;
     mimeType?: string | null;
+    recipient?: string | null;
+    verificationCount?: number;
+    issuerOrg?: string | null;
   };
 }
 
 export default function DocumentDetailsModal({ details }: Props) {
   const [isOpen, setIsOpen] = useState(false);
+
+  const formatHash = (hash: string) => {
+    if (hash.length <= 64) return hash;
+    const part1 = hash.slice(0, 32);
+    const part2 = hash.slice(32, 48);
+    const part3 = hash.slice(48, 64);
+    return `${part1}\n${part2}...\n${part3}`;
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'VERIFIED':
+        return <span className={`${styles.statusBadge} ${styles.verified}`}>✓ Verified</span>;
+      case 'REVOKED':
+        return <span className={`${styles.statusBadge} ${styles.revoked}`}>✕ Revoked</span>;
+      case 'TAMPERED':
+        return <span className={`${styles.statusBadge} ${styles.tampered}`}>⚠ Tampered</span>;
+      default:
+        return <span className={`${styles.statusBadge} ${styles.verified}`}>✓ Verified</span>;
+    }
+  };
 
   return (
     <>
@@ -44,10 +68,19 @@ export default function DocumentDetailsModal({ details }: Props) {
               <div className={styles.metaPanel}>
                 <div className={styles.modalHeader}>
                   <div className={styles.badge}>RECORD DATA</div>
+                  <button className={styles.closeBtn} onClick={() => setIsOpen(false)}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </button>
                 </div>
 
                 <div className={styles.modalBody}>
                   <h2 className={styles.docName}>{details.name}</h2>
+                  <div className={styles.statusRow}>
+                    {getStatusBadge(details.status)}
+                    {details.verificationCount !== undefined && (
+                      <span className={styles.verifyCount}>Verified {details.verificationCount}x</span>
+                    )}
+                  </div>
                   <p className={styles.docId}>ID: {details.id}</p>
 
                   <div className={styles.divider}></div>
@@ -56,6 +89,13 @@ export default function DocumentDetailsModal({ details }: Props) {
                     <div className={styles.metaItem}>
                       <span className={styles.label}>Authority</span>
                       <span className={styles.value}>{details.issuer}</span>
+                      {details.issuerOrg && (
+                        <span className={styles.subValue}>{details.issuerOrg}</span>
+                      )}
+                    </div>
+                    <div className={styles.metaItem}>
+                      <span className={styles.label}>Recipient</span>
+                      <span className={styles.value}>{details.recipient || '—'}</span>
                     </div>
                     <div className={styles.metaItem}>
                       <span className={styles.label}>Timestamp</span>
@@ -67,7 +107,7 @@ export default function DocumentDetailsModal({ details }: Props) {
 
                   <div className={styles.hashSection}>
                     <span className={styles.label}>Cryptographic Fingerprint</span>
-                    <code className={styles.hashCode}>{details.hash}</code>
+                    <pre className={styles.hashCode}>{formatHash(details.hash)}</pre>
                   </div>
                 </div>
               </div>
@@ -76,9 +116,6 @@ export default function DocumentDetailsModal({ details }: Props) {
               <div className={styles.previewPanel}>
                 <div className={styles.modalHeader}>
                   <div className={styles.badge}>DOCUMENT PREVIEW</div>
-                  <button className={styles.closeBtn} onClick={() => setIsOpen(false)}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                  </button>
                 </div>
                 
                 <div className={styles.previewContainer}>
@@ -89,7 +126,13 @@ export default function DocumentDetailsModal({ details }: Props) {
                       fileName={details.name}
                     />
                   ) : (
-                    <div className={styles.noPreview}>No preview available</div>
+                    <div className={styles.noPreview}>
+                      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ color: 'var(--muted)', marginBottom: '1rem' }}>
+                        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                      </svg>
+                      No preview available
+                    </div>
                   )}
                 </div>
 

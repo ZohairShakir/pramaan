@@ -1,223 +1,310 @@
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import QRSection from '@/components/QRSection';
-import DocumentPreviewWrapper from '@/components/DocumentPreviewWrapper';
-import styles from './page.module.css';
-import { prisma } from '@/lib/prisma';
-import Link from 'next/link';
-import DocumentDetailsModal from '@/components/DocumentDetailsModal';
-import VerificationReveal from './VerificationReveal';
+import { FooterV2 as Footer } from "@/components/Landing/FooterV2";
+import Navbar from "@/components/Navbar";
+import { prisma } from "@/lib/prisma";
+import { 
+  ShieldCheck, AlertTriangle, XCircle, 
+  Hash, User, Building2, Globe, Fingerprint,
+  Calendar, Download, ExternalLink, History, 
+  CheckCircle2, FileText, ArrowLeft, ArrowUpRight,
+  AlertCircle,
+  Share2,
+  Lock,
+  Zap,
+  Globe2,
+  SearchX,
+  RefreshCcw,
+  Search
+} from "lucide-react";
+import Link from "next/link";
+import { Logo } from "@/components/Logo";
+import { cn } from "@/lib/utils";
 
-export default async function VerificationPage({ params }: { params: { id: string } }) {
+interface VerificationPageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default async function VerificationPage({ params }: VerificationPageProps) {
   const { id } = await params;
 
-  // Handle Demo States
   let document = null;
-  let status: 'verified' | 'tampered' = 'tampered';
-  let details: any = null;
+  let dbError = false;
 
-  if (id === 'v_demo') {
-    status = 'verified';
-    details = {
-      name: "Architectural Diploma (Demo)",
-      issuer: "Pramaan Academy of Design",
-      issuedOn: "OCT 24, 2024",
-      status: "AUTHENTICATED",
-      hash: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      mimeType: "application/pdf",
-      fileUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
-    };
-    document = {
-      fileUrl: details.fileUrl,
-      mimeType: details.mimeType
-    };
-  } else if (id === 't_demo') {
-    status = 'tampered';
-    details = {
-      name: "Modified Transcript (Demo)",
-      issuer: "Unknown / Unverified Source",
-      issuedOn: "INVALID DATE",
-      status: "TAMPERED / ALTERED",
-      hash: "0000000000000000000000000000000000000000000000000000000000000000",
-      mimeType: null,
-      fileUrl: null
-    };
-  } else {
-    // Normal DB Lookup
+  try {
     document = await prisma.document.findUnique({
-      where: { id }
+      where: { id },
+      include: {
+        user: true,
+        history: { orderBy: { timestamp: "desc" } }
+      }
     });
-
-    if (document) {
-      status = 'verified';
-      details = {
-        name: document.name,
-        issuer: "Pramaan Network",
-        issuedOn: document.verifiedOn?.toLocaleDateString('en-US', {
-          month: 'short',
-          day: 'numeric',
-          year: 'numeric'
-        }).toUpperCase() || 'OCT 25, 2026',
-        status: 'AUTHENTICATED',
-        hash: document.hash,
-        mimeType: document.mimeType,
-        fileUrl: document.fileUrl
-      };
-    }
+  } catch (err) {
+    dbError = true;
   }
 
-  return (
-    <VerificationReveal status={status}>
-      <div className={styles.page}>
-        <main className={styles.main}>
-          {/* Top Premium Navigation Bar */}
-          <div className={styles.topNav}>
-            <div className={styles.navLeft}>
-              <div className={styles.navDot}></div>
-              <span className={styles.pageTitle}>Verification Result</span>
+  // Not Found UI State
+  if (!document && id !== "demo-active") {
+    return (
+      <div className="min-h-screen bg-white text-black selection:bg-lime selection:text-black">
+        <Navbar />
+        <main className="pt-32 md:pt-48 pb-24 px-6 max-w-7xl mx-auto flex flex-col items-center justify-center text-center">
+            <div className="w-24 h-24 md:w-32 md:h-32 rounded-[2.5rem] bg-[#F2E6E1] flex items-center justify-center mb-10 shadow-2xl relative overflow-hidden group">
+                <SearchX size={64} className="text-black/20 group-hover:scale-110 transition-transform duration-500" />
+                <div className="absolute inset-0 bg-red-500/5" />
             </div>
-            <Link href="/" className={styles.homeBtn} aria-label="Go home">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            </Link>
-          </div>
-
-          {/* Main Ticket Card */}
-          <div className={styles.ticketCard}>
-            {/* Top Status & Preview Row */}
-            <div className={styles.cardHeader}>
-              <div className={`${styles.statusCircle} ${status === 'verified' ? styles.verified : styles.invalid}`}>
-                {status === 'verified' ? (
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                ) : (
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                )}
-              </div>
-              <div className={styles.previewCircle}>
-                {status === 'verified' && details?.fileUrl ? (
-                  <DocumentPreviewWrapper 
-                    fileUrl={details.fileUrl} 
-                    mimeType={details.mimeType || null}
-                    fileName={details.name}
-                  />
-                ) : (
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
-                )}
-              </div>
-            </div>
-
-            <div className={styles.statusBanner}>
-              <span className={`${styles.statusText} ${status === 'verified' ? styles.statusVerified : styles.statusTampered}`}>
-                {status === 'verified' ? 'VERIFIED RECORD' : 'TAMPERED RECORD'}
-              </span>
-              <div className={styles.statusLine}></div>
-            </div>
-
-            <h1 className={styles.documentTitle}>
-              {details?.name || 'Document Not Found'}
+            
+            <h1 className="text-6xl md:text-9xl font-bold tracking-tight uppercase leading-[0.8] mb-12">
+                Not <br />
+                <span className="bg-black text-white px-6 py-2 rounded-sm inline-block mt-8">Recognized.</span>
             </h1>
+            
+            <p className="text-xl text-black/40 font-medium max-w-xl mb-16 leading-relaxed">
+                This document fingerprint does not exist in the global decentralized registry. It may be forged or hasn't been anchored yet.
+            </p>
 
-            <div className={styles.badgeRow}>
-              {status === 'verified' ? (
-                <>
-                  <div className={styles.badge}>AUTHENTIC</div>
-                  <div className={styles.badge}>#{id.slice(0, 5).toUpperCase()}</div>
-                </>
-              ) : (
-                <div className={`${styles.badge} ${styles.error}`}>INVALID / TAMPERED</div>
-              )}
+            <div className="flex flex-col sm:flex-row gap-6 w-full max-w-md">
+                <Link href="/verify" className="flex-1 bg-black text-white h-16 rounded-2xl font-bold flex items-center justify-center gap-3 shadow-xl shadow-black/10">
+                    <RefreshCcw size={18} />
+                    Try Again
+                </Link>
+                <Link href="/docs" className="flex-1 bg-[#F8F8F8] border border-black/5 h-16 rounded-2xl font-bold flex items-center justify-center gap-3">
+                    <Search size={18} />
+                    Search Help
+                </Link>
             </div>
-
-            <div className={styles.divider}></div>
-
-            <div className={styles.infoSection}>
-              <div className={styles.metaInfo}>
-                <div className={styles.metaItem}>
-                  <span className={styles.label}>Global / UTC</span>
-                  <span className={styles.value}>Issued on {details?.issuedOn || 'N/A'}</span>
+            
+            <div className="mt-32 pt-20 border-t border-black/5 w-full flex flex-col items-center">
+                <div className="flex items-center gap-4 text-black/20 text-[10px] font-bold uppercase tracking-[0.4em]">
+                    <Lock size={12} />
+                    Secured Global Registry Node
                 </div>
-                <div className={styles.metaItem}>
-                  <span className={styles.label}>Account Status</span>
-                  <span className={styles.value} style={{ color: status === 'verified' ? 'var(--accent)' : 'var(--error)' }}>
-                    {status === 'verified' ? 'VALIDATED' : 'NOT FOUND'}
-                  </span>
-                </div>
-              </div>
-
-              {status === 'verified' && (
-                <div className={styles.qrWrapper}>
-                  <QRSection url={`${process.env.NEXTAUTH_URL || ''}/verify/${id}`} size={80} hideDescription={true} />
-                </div>
-              )}
             </div>
-          </div>
-
-          {/* Action Rows / Details Section */}
-          {status === 'verified' && details && (
-            <div className={styles.actionRows}>
-              <DocumentDetailsModal details={{
-                name: details.name,
-                issuer: details.issuer,
-                issuedOn: details.issuedOn,
-                status: details.status,
-                hash: details.hash,
-                id: id,
-                fileUrl: details.fileUrl || '',
-                mimeType: details.mimeType || null
-              }} />
-
-              <div className={styles.actionRow}>
-                <div className={styles.actionLeft}>
-                  <div className={styles.actionIcon}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
-                  </div>
-                  <span className={styles.actionText}>Blockchain Hash</span>
-                </div>
-                <span className={styles.value} style={{ fontSize: '0.7rem', opacity: 0.5 }}>{details?.hash.slice(0, 16)}...</span>
-              </div>
-
-              <div className={styles.actionRow}>
-                <div className={styles.actionLeft}>
-                  <div className={styles.actionIcon}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                  </div>
-                  <span className={styles.actionText}>Security & Privacy</span>
-                </div>
-                <div className={styles.chevron}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Tampered State Specific UI */}
-          {status === 'tampered' && (
-            <div className={styles.warningBox}>
-              <div className={styles.warningHeader}>
-                <div className={styles.warningIcon}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                </div>
-                <h3>Security Alert</h3>
-              </div>
-              <p className={styles.warningText}>
-                This document has been flagged as **UNVERIFIED**. The cryptographic hash does not match any record in the Pramaan blockchain registry.
-              </p>
-              <div className={styles.riskList}>
-                <div className={styles.riskItem}>• Content may have been altered after anchoring.</div>
-                <div className={styles.riskItem}>• The document might not have been registered yet.</div>
-                <div className={styles.riskItem}>• This could be a fraudulent copy.</div>
-              </div>
-            </div>
-          )}
-
-          <div className={styles.footerText}>
-            Powered by Pramaan Network Blockchain
-          </div>
-          
-          <Link href="/" className={styles.footerText} style={{ marginTop: '2rem', display: 'block', textDecoration: 'none' }}>
-            ← Back to Home
-          </Link>
         </main>
+        <Footer />
       </div>
-    </VerificationReveal>
+    );
+  }
+
+  // Mock data for demo if needed
+  const data = document ? {
+    ...document,
+    history: document.history || []
+  } : {
+    id: "demo-active",
+    name: "Bachelor of Technology - Computer Science",
+    hash: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    did: "did:pramaan:poly:e3b0c44298fc1c149afbf4c8996fb924",
+    status: "ACTIVE",
+    category: "Education",
+    recipientName: "Zohair Shakir",
+    network: "Polygon POS",
+    txHash: "0x7d2e4a1f...b1d10",
+    verifiedAt: new Date(),
+    verificationCount: 42,
+    user: { organizationName: "Indian Institute of Technology, Delhi" },
+    history: [
+      { eventType: "ISSUED", timestamp: new Date(Date.now() - 86400000 * 30), ipAddress: "14.139.62.11" },
+      { eventType: "VERIFIED", timestamp: new Date(Date.now() - 86400000 * 5), ipAddress: "103.21.164.2" }
+    ]
+  };
+
+  const statusConfigs = {
+    ACTIVE: {
+      color: "text-black",
+      accentColor: "text-[#3D541D]",
+      bg: "bg-[#F2E6E1]",
+      icon: <ShieldCheck className="w-12 h-12" />,
+      label: "CERTIFIED AUTHENTIC",
+      desc: "This document has been cryptographically settled on the Polygon mainnet."
+    },
+    VERIFIED: {
+      color: "text-black",
+      accentColor: "text-[#3D541D]",
+      bg: "bg-[#F2E6E1]",
+      icon: <ShieldCheck className="w-12 h-12" />,
+      label: "CERTIFIED AUTHENTIC",
+      desc: "This document has been cryptographically settled on the Polygon mainnet."
+    },
+    REVOKED: {
+      color: "text-red-600",
+      accentColor: "text-red-600",
+      bg: "bg-red-50",
+      icon: <AlertTriangle className="w-12 h-12" />,
+      label: "DOCUMENT REVOKED",
+      desc: "This proof was previously valid but has been formally withdrawn by the issuer."
+    },
+    SUSPENDED: {
+      color: "text-black/60",
+      accentColor: "text-black/60",
+      bg: "bg-black/5",
+      icon: <XCircle className="w-12 h-12" />,
+      label: "GENESIS SUSPENDED",
+      desc: "Warning: This document status is currently under institutional review."
+    }
+  };
+
+  const statusConfig = statusConfigs[data.status as keyof typeof statusConfigs] || statusConfigs.ACTIVE;
+
+  return (
+    <div className="min-h-screen bg-white text-black selection:bg-lime selection:text-black">
+      <Navbar />
+
+      <main className="pt-32 md:pt-48 pb-24 px-6 max-w-7xl mx-auto">
+        <div className="space-y-12">
+            <Link href="/verify" className="inline-flex items-center text-black/40 hover:text-black transition-colors text-xs font-bold tracking-widest gap-2 uppercase">
+              <ArrowLeft size={14} />
+              Verify Another
+            </Link>
+
+            <div className="bg-white rounded-[4rem] border border-black/5 overflow-hidden shadow-2xl">
+                {/* Hero Status Banner */}
+                <div className={cn("p-16 md:p-32 text-center space-y-10 relative overflow-hidden", statusConfig.bg)}>
+                    <div className="w-24 h-24 md:w-32 md:h-32 rounded-[2.5rem] bg-white flex items-center justify-center mx-auto shadow-2xl relative z-10 animate-in zoom-in duration-700">
+                        <div className={statusConfig.accentColor}>{statusConfig.icon}</div>
+                    </div>
+                    <div className="space-y-6 relative z-10">
+                        <h1 className="text-6xl md:text-9xl font-bold tracking-tight uppercase leading-[0.8]">
+                            {statusConfig.label.split(' ')[0]} <br />
+                            <span className="bg-white px-6 py-2 rounded-sm text-black inline-block mt-8">{statusConfig.label.split(' ')[1]}</span>
+                        </h1>
+                        <p className="text-black/30 font-bold text-xs md:text-sm uppercase tracking-[0.5em] flex items-center justify-center gap-4">
+                            <span className="w-8 h-px bg-black/10" />
+                            Global Registry Authenticated
+                            <span className="w-8 h-px bg-black/10" />
+                        </p>
+                    </div>
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#3D541D08,transparent_70%)] pointer-events-none" />
+                </div>
+
+                {/* Content Grid */}
+                <div className="p-12 md:p-20 space-y-20">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
+                        {/* Visual Proof Section */}
+                        <div className="space-y-12">
+                            <div className="p-12 bg-[#F8F8F8] rounded-[3.5rem] border border-black/5 flex items-center justify-center group relative overflow-hidden aspect-square">
+                                <div className="relative z-10 flex flex-col items-center gap-8">
+                                    <Logo size={120} className="opacity-10 group-hover:opacity-100 transition-all duration-700 scale-90 group-hover:scale-100" />
+                                    <div className="text-center space-y-2">
+                                        <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-black/20">Digital Fingerprint</p>
+                                        <p className="font-mono text-[9px] text-black/40 break-all max-w-[200px]">{data.hash}</p>
+                                    </div>
+                                </div>
+                                <div className="absolute inset-0 bg-white/90 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-20">
+                                    <div className="text-center space-y-6">
+                                        <div className="w-20 h-20 bg-black rounded-3xl flex items-center justify-center mx-auto shadow-2xl">
+                                            <ShieldCheck size={32} className="text-lime" />
+                                        </div>
+                                        <p className="text-xs font-bold uppercase tracking-widest">Tamper-Proof Ledger</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-8 px-4">
+                                <div className="space-y-1">
+                                    <p className="text-[10px] font-bold text-black/30 uppercase tracking-widest">Settlement Layer</p>
+                                    <p className="text-sm font-bold flex items-center gap-2">
+                                        <Globe2 size={14} className="text-[#3D541D]" />
+                                        Polygon Mainnet
+                                    </p>
+                                </div>
+                                <div className="text-right space-y-1">
+                                    <p className="text-[10px] font-bold text-black/30 uppercase tracking-widest">Network Speed</p>
+                                    <p className="text-sm font-bold flex items-center justify-end gap-2">
+                                        <Zap size={14} className="text-[#3D541D]" />
+                                        Instant Audit
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Record Details Section */}
+                        <div className="space-y-12">
+                            <div className="space-y-10">
+                                <div className="space-y-4">
+                                    <span className="text-[10px] font-bold uppercase tracking-widest text-black/30 flex items-center gap-2">
+                                        <FileText size={12} /> Registry Entry
+                                    </span>
+                                    <h2 className="text-4xl md:text-7xl font-bold tracking-tight leading-tight">{data.name}</h2>
+                                    <div className="flex gap-3">
+                                        <span className="px-4 py-1.5 bg-black/5 rounded-full text-[10px] font-bold uppercase tracking-widest">ID: {data.id.slice(0, 8).toUpperCase()}</span>
+                                        <span className="px-4 py-1.5 bg-black/5 rounded-full text-[10px] font-bold uppercase tracking-widest">{data.category}</span>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-12 pt-10 border-t border-black/5">
+                                    <div className="space-y-3">
+                                        <span className="text-[10px] font-bold uppercase tracking-widest text-black/30">Issuer Authority</span>
+                                        <p className="text-xl font-bold">{(data.user as any)?.organizationName || "Pramaan Institution"}</p>
+                                    </div>
+                                    <div className="space-y-3">
+                                        <span className="text-[10px] font-bold uppercase tracking-widest text-black/30">Authorized Recipient</span>
+                                        <p className="text-xl font-bold">{data.recipientName || "Public Record"}</p>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-12">
+                                    <div className="space-y-3">
+                                        <span className="text-[10px] font-bold uppercase tracking-widest text-black/30">Genesis Date</span>
+                                        <p className="text-lg font-bold">{new Date(data.verifiedAt!).toLocaleDateString('en-IN', { dateStyle: 'long' })}</p>
+                                    </div>
+                                    <div className="space-y-3">
+                                        <span className="text-[10px] font-bold uppercase tracking-widest text-black/30">Total Audits</span>
+                                        <p className="text-lg font-bold">{data.verificationCount} Records</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="pt-10 border-t border-black/5 space-y-6">
+                                <div className="flex gap-4">
+                                    <button className="flex-1 flex items-center justify-center gap-3 bg-black text-white h-16 rounded-2xl font-bold text-sm hover:bg-black/90 transition-all shadow-xl shadow-black/10">
+                                        <Download size={18} />
+                                        Download Proof
+                                    </button>
+                                    <button className="w-16 h-16 flex items-center justify-center bg-[#F8F8F8] border border-black/5 rounded-2xl text-black hover:bg-black hover:text-white transition-all">
+                                        <Share2 size={18} />
+                                    </button>
+                                </div>
+                                <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-black/20 justify-center">
+                                    <Lock size={12} />
+                                    End-to-End Cryptography
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Technical Audit Log */}
+                    <div className="bg-[#F8F8F8] rounded-[3.5rem] p-12 space-y-12 border border-black/5">
+                        <div className="flex justify-between items-center">
+                            <h3 className="text-xl font-bold flex items-center gap-3">
+                                <History size={22} className="text-black/30" />
+                                Institutional Audit Trail
+                            </h3>
+                            <span className="px-3 py-1 bg-lime text-black text-[10px] font-bold uppercase tracking-widest rounded-full">Genesis Live</span>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                            {data.history.map((event: any, i: number) => (
+                                <div key={i} className="flex gap-6 items-start">
+                                    <div className="w-10 h-10 rounded-xl bg-white border border-black/5 flex items-center justify-center flex-shrink-0 shadow-sm text-black/20">
+                                        {event.eventType === 'ISSUED' ? <FileText size={18} /> : <CheckCircle2 size={18} />}
+                                    </div>
+                                    <div className="space-y-1">
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-[10px] font-bold uppercase tracking-widest text-black/40">{event.eventType}</span>
+                                            <span className="text-[10px] text-black/20 font-bold">{new Date(event.timestamp).toLocaleDateString()}</span>
+                                        </div>
+                                        <p className="text-sm font-medium text-black/60 leading-relaxed">
+                                            {event.eventType === 'ISSUED' ? "Document settled on chain." : "Institutional verify request."}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </main>
+
+      <Footer />
+    </div>
   );
 }

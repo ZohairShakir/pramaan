@@ -17,11 +17,24 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String?
+  role          Role      @default(USER)
+  
   accounts      Account[]
   sessions      Session[]
   documents     Document[]
+  
+  organizationName String?
+  isVerifiedIssuer Boolean @default(false)
+  trustScore       Float   @default(0.0)
+  
   createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  updatedAt     DateTime  @default(now()) @updatedAt
+}
+
+enum Role {
+  USER
+  ISSUER
+  ADMIN
 }
 
 model Account {
@@ -51,26 +64,67 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
-}
-
 model Document {
-  id           String   @id @default(cuid())
-  userId       String?
-  name         String
-  hash         String   @unique
-  fileUrl      String?
-  size         Int?
-  mimeType     String?
-  verifiedAt   DateTime?
-  createdAt    DateTime @default(now())
-  verifiedOn   DateTime?
-  user         User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  id              String   @id @default(cuid())
+  userId          String?
+  name            String
+  hash            String   @unique
+  did             String?  @unique
+  
+  // Blockchain Data
+  txHash          String?
+  blockNumber     Int?
+  network         String   @default("Polygon")
+  
+  // Metadata
+  category        String?  // Education, Hiring, Legal, Healthcare, etc.
+  recipientName   String?
+  recipientEmail  String?
+  metadata        Json?    // For sector-specific data
+  
+  // Status
+  status          DocStatus @default(ACTIVE)
+  verifiedAt      DateTime?
+  expiresAt       DateTime?
+  revokedAt       DateTime?
+  
+  // Stats
+  verificationCount Int    @default(0)
+  
+  // Relations
+  user            User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  history         VerificationEvent[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
 
   @@map("documents")
+}
+
+enum DocStatus {
+  ACTIVE
+  REVOKED
+  SUSPENDED
+}
+
+model VerificationEvent {
+  id            String   @id @default(cuid())
+  documentId    String
+  eventType     String   // ISSUED, VERIFIED, REVOKED, TAMPER_ATTEMPT
+  ipAddress     String?
+  location      String?
+  userAgent     String?
+  timestamp     DateTime @default(now())
+  
+  document      Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@map("verification_events")
+}
+
+model FraudLog {
+  id            String   @id @default(cuid())
+  hashAttempted String
+  ipAddress     String?
+  timestamp     DateTime @default(now())
+  severity      Int      @default(1) // 1-5
 }

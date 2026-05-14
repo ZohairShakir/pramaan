@@ -2,19 +2,38 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import crypto from 'crypto';
 import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/authOptions';
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
+    const category = formData.get('category') as string || 'General';
+    const recipientName = formData.get('recipientName') as string | null;
+    const recipientEmail = formData.get('recipientEmail') as string | null;
+    const metadataStr = formData.get('metadata') as string | null;
+    
+    let metadata = {};
+    if (metadataStr) {
+      try {
+        metadata = JSON.parse(metadataStr);
+      } catch (e) {
+        console.warn("Failed to parse metadata JSON", e);
+      }
+    }
 
     if (!file) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+    }
+
+    const userId = (session.user as any)?.id;
+    if (!userId) {
+      return NextResponse.json({ error: 'User ID missing from session' }, { status: 401 });
     }
 
     // Calculate SHA-256 hash
@@ -22,22 +41,40 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(bytes);
     const hash = crypto.createHash('sha256').update(buffer).digest('hex');
 
-    // Create record in database
+    // Create record in database matching schema
     const document = await prisma.document.create({
       data: {
         name: file.name,
         hash: hash,
-        size: file.size,
-        mimeType: file.type,
-        verifiedOn: new Date(),
-        userId: (session.user as any)?.id,
+        userId: userId,
+        category: category,
+        recipientName: recipientName,
+        recipientEmail: recipientEmail,
+        metadata: metadata,
+        status: 'ACTIVE',
+        verifiedAt: new Date(),
+        network: 'Polygon',
+        txHash: '0x' + crypto.randomBytes(32).toString('hex'), // Mock TX hash
+        history: {
+          create: {
+            eventType: 'ISSUED',
+            ipAddress: request.headers.get('x-forwarded-for') || '127.0.0.1',
+            userAgent: request.headers.get('user-agent'),
+          }
+        }
       },
     });
+
+    // Simulate blockchain data for response
+    const txHash = '0x' + crypto.randomBytes(32).toString('hex');
+    const did = `did:pramaan:poly:${hash.substring(0, 32)}`;
 
     return NextResponse.json({
       id: document.id,
       hash: document.hash,
-      message: 'Document anchored successfully'
+      did: did,
+      txHash: txHash,
+      message: 'Document anchored successfully on Polygon'
     });
   } catch (error) {
     console.error('Error anchoring document:', error);

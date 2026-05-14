@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PRAMAAN Dynamic QR Particle Background</title>
+
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Outfit', 'Inter', sans-serif;
+            }
+
+            body {
+                background: #F9F7F2;
+                overflow: hidden;
+                -webkit-font-smoothing: antialiased;
+            }
+
+            canvas {
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: 1;
+            }
+
+            .hero {
+                position: relative;
+                z-index: 2;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding: 0 2rem;
+            }
+
+            h1 {
+                font-size: calc(24px + 12vw);
+                font-weight: 600;
+                color: #142210;
+                letter-spacing: -0.04em;
+                text-align: center;
+                line-height: 1;
+                max-width: 90%;
+            }
+
+            p {
+                margin-top: 24px;
+                font-size: calc(8px + 1.5vw);
+                letter-spacing: 0.5em;
+                text-transform: uppercase;
+                color: #A6634B;
+                font-weight: 700;
+                opacity: 0.6;
+                max-width: 80%;
+                text-align: center;
+            }
+
+            @media (max-width: 480px) {
+                .hero {
+                    padding: 0 1rem;
+                }
+                h1 {
+                    font-size: calc(20px + 10vw);
+                }
+                p {
+                    font-size: calc(6px + 1vw);
+                }
+            }
+        </style>
+</head>
+
+<body>
+
+    <canvas id="canvas"></canvas>
+
+    <section class="hero">
+        <h1>VERIFY TRUST.</h1>
+        <p>The Future of Authentication</p>
+    </section>
+
+    <script>
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        let mouse = {
+            x: width / 2,
+            y: height / 2
+        };
+
+        const dots = [];
+        const gap = 28;
+
+        const accentColor = "#A6634B"; // New Terracotta
+
+        const qrPatterns = [
+            [
+                [1, 1, 1, 0, 1, 0],
+                [1, 0, 1, 0, 1, 1],
+                [1, 1, 1, 0, 0, 1],
+                [0, 0, 0, 1, 1, 0],
+                [1, 1, 0, 1, 0, 1],
+                [0, 1, 1, 0, 1, 1],
+            ],
+            [
+                [1, 0, 1, 1, 0, 1],
+                [1, 1, 0, 0, 1, 1],
+                [0, 1, 1, 1, 0, 0],
+                [1, 0, 0, 1, 1, 1],
+                [1, 1, 1, 0, 1, 0],
+                [0, 1, 0, 1, 1, 1],
+            ],
+            [
+                [1, 1, 0, 1, 1, 0],
+                [0, 1, 1, 0, 1, 1],
+                [1, 0, 1, 1, 0, 1],
+                [1, 1, 0, 0, 1, 0],
+                [0, 1, 1, 1, 0, 1],
+                [1, 0, 1, 0, 1, 1],
+            ]
+        ];
+
+        let currentQR = 0;
+        let lastChange = Date.now();
+
+        class Dot {
+            constructor(x, y) {
+                this.baseX = x;
+                this.baseY = y;
+                this.x = x;
+                this.y = y;
+                this.size = 2;
+            }
+
+            update() {
+                const dx = mouse.x - this.x;
+                const dy = mouse.y - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < 160) {
+                    const force = (160 - distance) / 160;
+                    this.x = this.baseX - dx * force * 0.08;
+                    this.y = this.baseY - dy * force * 0.08;
+                } else {
+                    this.x += (this.baseX - this.x) * 0.05;
+                    this.y += (this.baseY - this.y) * 0.05;
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = "#142210"; // New Forest
+                ctx.globalAlpha = 0.15;
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        function init() {
+            dots.length = 0;
+
+            for (let x = 0; x < width; x += gap) {
+                for (let y = 0; y < height; y += gap) {
+                    dots.push(new Dot(x, y));
+                }
+            }
+        }
+
+        function drawDynamicQR() {
+            const pattern = qrPatterns[currentQR];
+            const block = 18;
+
+            const qrX = mouse.x - 55;
+            const qrY = mouse.y - 55;
+
+            ctx.fillStyle = accentColor;
+            ctx.globalAlpha = 0.18;
+
+            for (let i = 0; i < pattern.length; i++) {
+                for (let j = 0; j < pattern[i].length; j++) {
+                    if (pattern[i][j]) {
+                        ctx.fillRect(
+                            qrX + j * block,
+                            qrY + i * block,
+                            block - 4,
+                            block - 4
+                        );
+                    }
+                }
+            }
+
+            ctx.globalAlpha = 1;
+
+            if (Date.now() - lastChange > 1800) {
+                currentQR = (currentQR + 1) % qrPatterns.length;
+                lastChange = Date.now();
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+
+            dots.forEach(dot => {
+                dot.update();
+                dot.draw();
+            });
+
+            drawDynamicQR();
+
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener("mousemove", (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        window.addEventListener("resize", () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            init();
+        });
+
+        init();
+        animate();
+    </script>
+
+</body>
+
+</html>

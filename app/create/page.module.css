@@ -1,34 +1,32 @@
 .page {
   min-height: 100vh;
+  background-color: var(--background);
   display: flex;
   flex-direction: column;
-  background-color: #f2f2f2;
-  padding: 0.75rem; /* Reduced page padding */
-  align-items: center;
 }
 
 .main {
-  width: 100%;
-  max-width: 500px;
+  flex: 1;
+  padding: 10rem 2rem 6rem;
   display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  padding-top: 2rem; /* Significantly reduced top gap */
-  padding-bottom: 4rem;
+  justify-content: center;
+  align-items: flex-start;
 }
 
-/* Premium Top Navigation */
+/* Top Navigation */
 .topNav {
-  width: 100%;
+  position: absolute;
+  top: 1.5rem;
+  left: 2rem;
+  right: 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 1.25rem;
-  background-color: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(10px);
+  background: var(--card);
+  padding: 1rem 1.5rem;
   border-radius: 100px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  margin-bottom: 0.5rem; /* Reduced margin */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  z-index: 10;
 }
 
 .navLeft {
@@ -38,334 +36,454 @@
 }
 
 .navDot {
-  width: 8px;
-  height: 8px;
-  background-color: var(--accent);
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  box-shadow: 0 0 10px var(--accent);
+  background: var(--accent);
 }
 
 .pageTitle {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  color: var(--foreground);
+  color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.15em;
 }
 
 .homeBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  background-color: white;
-  border-radius: 50%;
-  color: var(--foreground);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  transition: all 0.3s ease;
+  color: var(--muted);
+  transition: all 0.2s ease;
 }
 
 .homeBtn:hover {
+  color: var(--accent);
   transform: scale(1.1);
-  background-color: var(--accent);
-  color: white;
 }
 
-/* Main Ticket Card */
+/* Ticket Card */
 .ticketCard {
-  background: #ffffff;
+  background: var(--card);
   border-radius: 40px;
-  padding: 3rem 2.5rem;
+  padding: 3rem;
+  margin-top: 4rem;
+  width: 100%;
+  max-width: 560px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
   position: relative;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-  display: flex;
-  flex-direction: column;
 }
 
 .cardIcon {
-  width: 48px;
-  height: 48px;
-  background: var(--foreground);
-  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: var(--accent-muted);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  margin-bottom: 2rem;
+  color: var(--accent);
+  margin: 0 auto 1.5rem;
 }
 
 .title {
   font-family: var(--font-outfit);
-  font-size: 2.25rem; /* Slightly reduced for better fit */
+  font-size: 2rem;
   font-weight: 700;
-  letter-spacing: -0.04em;
+  color: var(--foreground);
+  text-align: center;
   margin-bottom: 0.75rem;
-  line-height: 1;
-}
-
-.accentText {
-  color: var(--accent);
+  text-transform: none;
+  letter-spacing: -0.02em;
 }
 
 .subtitle {
-  font-size: 0.8125rem; /* Slightly smaller for density */
+  text-align: center;
   color: var(--muted);
-  line-height: 1.5;
-  margin-bottom: 2.5rem;
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+  line-height: 1.7;
 }
 
 /* Upload Box */
 .uploadBox {
-  background: #f5f5f7;
-  border: 2px dashed #e0e0e0;
-  border-radius: 30px;
-  padding: 3.5rem 2rem; /* Reduced vertical padding */
+  border: 2px dashed var(--border);
+  border-radius: 24px;
+  padding: 3rem 2rem;
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.25rem;
   transition: all 0.3s ease;
-  min-height: 220px;
-  justify-content: center;
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+}
+
+.uploadBox:hover {
+  border-color: var(--accent);
+  background: var(--accent-muted);
 }
 
 .uploadBox.hasFile {
-  background: rgba(107, 125, 92, 0.05);
-  border-color: var(--accent);
-}
-
-.uploadBox:hover:not(.hasFile) {
-  border-color: var(--accent);
-  background: #fafafa;
+  border-style: solid;
+  background: var(--secondary);
 }
 
 .uploadIcon {
+  margin-bottom: 1rem;
+}
+
+.uploadIcon svg {
   color: var(--accent);
 }
 
 .uploadText {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #a0a0a0;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
 }
 
 .compactOptions {
   display: flex;
-  gap: 0.75rem;
-  margin-top: 0.5rem;
+  gap: 1rem;
+  justify-content: center;
 }
 
 .compactBtn {
-  padding: 0.6rem 1rem;
-  background: white;
-  border: 1px solid #e0e0e0;
+  padding: 0.75rem 1.5rem;
+  background: var(--foreground);
+  color: var(--background);
   border-radius: 100px;
-  font-size: 0.65rem;
+  font-weight: 600;
+  font-size: 0.8rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
+  letter-spacing: 0.1em;
   transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
 }
 
 .compactBtn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+  background: var(--accent);
+  transform: translateY(-2px);
 }
 
-/* File Info & Progress */
+/* File Preview */
 .filePreview {
+  text-align: center;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.25rem;
 }
 
 .previewCircle {
-  width: 64px;
-  height: 64px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
-  background: white;
-  overflow: hidden;
+  background: var(--secondary);
+  border: 2px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #eeeeee;
-}
-
-.previewCircle div {
-  transform: scale(0.2);
-  transform-origin: center;
+  margin: 0 auto 1rem;
+  overflow: hidden;
 }
 
 .fileName {
-  font-size: 0.9375rem;
-  font-weight: 700;
-  text-align: center;
+  display: block;
+  font-size: 0.85rem;
+  color: var(--foreground);
+  margin-bottom: 0.75rem;
   word-break: break-all;
 }
 
 .removeBtn {
-  font-size: 0.6rem;
-  font-weight: 800;
+  padding: 0.5rem 1.25rem;
+  background: transparent;
   color: var(--error);
+  border: 1px solid var(--error);
+  border-radius: 100px;
+  font-weight: 600;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.divider {
-  width: 100%;
-  height: 1px;
-  border-top: 1px dashed #e0e0e0;
-  margin: 2rem 0;
+.removeBtn:hover {
+  background: var(--error);
+  color: #fff;
 }
 
-.actionButton {
-  width: 100%;
-  padding: 1.1rem;
-  background-color: var(--foreground);
-  color: var(--background);
-  border-radius: 20px;
-  text-align: center;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  font-size: 0.7rem;
-  transition: all 0.3s ease;
+/* Issuer Section */
+.issuerSection {
+  margin-bottom: 1rem;
 }
 
-.actionButton:not(.disabled):hover {
-  background-color: var(--accent);
-  transform: translateY(-2px);
-}
-
-.actionButton.disabled {
-  opacity: 0.1;
-  cursor: not-allowed;
-}
-
-/* Result State */
-.resultSection {
+.issuerToggle {
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.qrContainer {
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 1.25rem;
-  padding: 1.5rem;
-  background: #f5f5f7;
-  border-radius: 30px;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: var(--secondary);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
 }
 
-.qrLabel {
-  font-size: 0.6rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  color: #a0a0a0;
+.issuerToggle:hover {
+  border-color: var(--border);
+  background: var(--card);
 }
 
-.metaGrid {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-}
-
-.metaItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px dashed #e0e0e0;
-}
-
-.metaItem:last-child {
-  border-bottom: none;
-}
-
-.metaLabel {
-  font-size: 0.6rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #a0a0a0;
-}
-
-.metaValue {
-  font-size: 0.8125rem;
+.issuerToggleText {
+  font-size: 0.8rem;
   font-weight: 600;
-}
-
-.metaValue.hash {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  opacity: 0.5;
-}
-
-.footerText {
-  text-align: center;
-  font-size: 0.7rem;
-  color: #a0a0a0;
-  margin-top: 0.5rem;
+  color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
 
-.error {
-  background-color: var(--error);
-  color: white;
-  padding: 1rem;
-  border-radius: 15px;
-  font-size: 0.7rem;
-  text-align: center;
+.issuerToggleIcon {
+  color: var(--muted);
+  transition: transform 0.3s ease;
+}
+
+.issuerToggleIcon.open {
+  transform: rotate(180deg);
+}
+
+.issuerFields {
   margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.inputLabel {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.textInput {
+  padding: 0.875rem 1rem;
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-size: 0.9rem;
+  color: var(--foreground);
+  transition: all 0.2s ease;
+}
+
+.textInput:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--background);
+}
+
+.textInput::placeholder {
+  color: var(--muted);
+  opacity: 0.5;
+}
+
+/* Divider */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: var(--border);
+  margin: 1.5rem 0;
+}
+
+/* Action Button */
+.actionButton {
+  width: 100%;
+  padding: 1.125rem;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 16px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.actionButton:hover:not(.disabled) {
+  background: #5a6f52;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 40px rgba(107, 125, 92, 0.3);
+}
+
+.actionButton.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
 
-.spinner {
-  width: 20px;
-  height: 20px;
-  border: 2px solid rgba(255,255,255,0.2);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+/* Result Section */
+.resultSection {
+  text-align: center;
+  width: 100%;
 }
 
-@media (max-width: 480px) {
-  .page {
-    padding: 0.5rem;
+/* Issuer Badge */
+.issuerBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  background: rgba(40, 205, 65, 0.1);
+  border-radius: 100px;
+  margin: 1.5rem 0;
+}
+
+.issuerBadgeIcon {
+  color: var(--success);
+}
+
+.issuerBadgeText {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--success);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* QR Container */
+.qrContainer {
+  margin: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.qrLabel {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+/* Meta Grid */
+.metaGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.metaItem {
+  text-align: center;
+  padding: 1.25rem 0.75rem;
+  background: var(--secondary);
+  border-radius: 16px;
+}
+
+.metaLabel {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.metaValue {
+  font-family: var(--font-outfit);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--foreground);
+  line-height: 1.4;
+  word-break: break-all;
+}
+
+.error {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: rgba(217, 83, 79, 0.1);
+  border: 1px solid var(--error);
+  border-radius: 12px;
+  color: var(--error);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* Footer Text */
+.footerText {
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-top: 3rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .main {
+    padding: 9rem 1rem 4rem;
   }
 
-  .main {
-    padding-top: 1rem; /* Minimal gap on mobile */
-    gap: 0.75rem;
+  .topNav {
+    left: 1rem;
+    right: 1rem;
+    padding: 0.75rem 1rem;
   }
-  
+
   .ticketCard {
-    padding: 2.25rem 1.25rem;
-    border-radius: 30px;
+    border-radius: 24px;
+    padding: 1.5rem;
+    margin-top: 3rem;
   }
-  
+
   .title {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
+  }
+
+  .metaGrid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
   }
 
   .uploadBox {
-    padding: 2.5rem 1.5rem;
-    min-height: 200px;
+    padding: 2rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .compactOptions {
+    flex-direction: column;
+  }
+
+  .compactBtn {
+    width: 100%;
   }
 }

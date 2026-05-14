@@ -1,34 +1,31 @@
 .page {
   min-height: 100vh;
+  background-color: var(--background);
   display: flex;
   flex-direction: column;
-  background-color: #f2f2f2;
-  padding: 0.75rem; /* Reduced page padding */
-  align-items: center;
 }
 
 .main {
-  width: 100%;
-  max-width: 500px;
+  flex: 1;
+  padding: 12rem 2rem 6rem;
   display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  padding-top: 2rem; /* Significantly reduced top gap */
-  padding-bottom: 4rem;
+  justify-content: center;
 }
 
-/* Premium Top Navigation */
+/* Top Navigation */
 .topNav {
-  width: 100%;
+  position: absolute;
+  top: 1.5rem;
+  left: 2rem;
+  right: 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 1.25rem;
-  background-color: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(10px);
+  background: var(--card);
+  padding: 1rem 1.5rem;
   border-radius: 100px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  margin-bottom: 0.5rem; /* Reduced margin */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  z-index: 10;
 }
 
 .navLeft {
@@ -38,328 +35,515 @@
 }
 
 .navDot {
-  width: 8px;
-  height: 8px;
-  background-color: var(--accent);
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  box-shadow: 0 0 10px var(--accent);
+  background: var(--accent);
 }
 
 .pageTitle {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  color: var(--foreground);
+  color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.15em;
 }
 
 .homeBtn {
+  color: var(--muted);
+  transition: all 0.2s ease;
+}
+
+.homeBtn:hover {
+  color: var(--accent);
+  transform: scale(1.1);
+}
+
+/* Ticket Card */
+.ticketCard {
+  background: var(--card);
+  border-radius: 40px;
+  padding: 3rem;
+  margin-top: 4rem;
+  width: 100%;
+  max-width: 800px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+  position: relative;
+}
+
+/* Status Banner */
+.statusBanner {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.statusCircle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  font-size: 2.5rem;
+}
+
+.statusVerified {
+  background: linear-gradient(135deg, rgba(40, 205, 65, 0.15), rgba(40, 205, 65, 0.05));
+  border: 2px solid var(--success);
+}
+
+.statusRevoked {
+  background: linear-gradient(135deg, rgba(217, 83, 79, 0.15), rgba(217, 83, 79, 0.05));
+  border: 2px solid var(--error);
+}
+
+.statusTampered {
+  background: linear-gradient(135deg, rgba(217, 83, 79, 0.15), rgba(217, 83, 79, 0.05));
+  border: 2px solid var(--error);
+}
+
+.statusText {
+  font-family: var(--font-outfit);
+  font-size: 2rem;
+  font-weight: 800;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.statusVerified .statusText {
+  color: var(--success);
+}
+
+.statusRevoked .statusText {
+  color: var(--error);
+}
+
+.statusTampered .statusText {
+  color: var(--error);
+}
+
+.statusLine {
+  width: 40px;
+  height: 3px;
+  background: var(--accent);
+  margin: 1rem auto 0;
+  border-radius: 2px;
+}
+
+/* Preview Row */
+.previewRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.previewCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  background: var(--secondary);
+  border-radius: 20px;
+}
+
+.previewCircle {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.previewIcon svg {
+  color: var(--muted);
+  opacity: 0.5;
+}
+
+.documentTitle {
+  font-family: var(--font-outfit);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--foreground);
+  text-align: center;
+  margin-bottom: 1rem;
+  word-break: break-word;
+}
+
+/* Badge Row */
+.badgeRow {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1rem;
+  background: var(--accent-muted);
+  color: var(--accent);
+  border-radius: 100px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.badgeRevoked {
+  background: rgba(217, 83, 79, 0.1);
+  color: var(--error);
+}
+
+.badgeError {
+  background: rgba(217, 83, 79, 0.1);
+  color: var(--error);
+}
+
+/* QR Panel */
+.qrPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  background: var(--secondary);
+  border-radius: 20px;
+}
+
+.qrLabel {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 1rem;
+}
+
+/* Details Section */
+.detailsSection {
+  margin-bottom: 2rem;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.infoCard {
+  padding: 1.25rem;
+  background: var(--secondary);
+  border-radius: 16px;
+  text-align: center;
+}
+
+.infoLabel {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.infoValue {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.infoValueWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.infoSub {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+/* Timeline Section */
+.timelineSection {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--secondary);
+  border-radius: 20px;
+}
+
+.timelineHeader {
+  margin-bottom: 1.5rem;
+}
+
+.timeline {
+  position: relative;
+}
+
+.timelineItem {
+  display: flex;
+  gap: 1rem;
+  position: relative;
+  padding-bottom: 1.5rem;
+}
+
+.timelineItem:last-child {
+  padding-bottom: 0;
+}
+
+.timelineItem:last-child .timelineLine {
+  display: none;
+}
+
+.timelineDot {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.timelineIcon {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 32px;
   height: 32px;
-  background-color: white;
   border-radius: 50%;
-  color: var(--foreground);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  transition: all 0.3s ease;
-}
-
-.homeBtn:hover {
-  transform: scale(1.1);
-  background-color: var(--accent);
-  color: white;
-}
-
-/* Main Ticket Card */
-.ticketCard {
-  background: #ffffff;
-  border-radius: 40px;
-  padding: 3rem 2.5rem;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-  display: flex;
-  flex-direction: column;
-}
-
-/* Header Circles */
-.cardHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2.5rem;
-}
-
-.statusCircle {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: #f5f5f7;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.statusCircle.verified {
-  background-color: var(--accent);
-}
-
-.statusCircle.invalid {
-  background-color: var(--error);
-}
-
-.previewCircle {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: #f5f5f7;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #eeeeee;
-}
-
-.statusBanner {
-  margin-bottom: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.statusText {
-  font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  animation: pulse 2s infinite ease-in-out;
-}
-
-.statusVerified {
-  color: var(--accent);
-}
-
-.statusTampered {
-  color: var(--error);
-}
-
-@keyframes pulse {
-  0% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.7; transform: scale(0.98); }
-  100% { opacity: 1; transform: scale(1); }
-}
-
-.statusLine {
-  width: 30px;
-  height: 2px;
   background: var(--accent);
-  border-radius: 100px;
+  color: #fff;
+  font-size: 0.85rem;
 }
 
-.statusTampered + .statusLine {
-  background: var(--error);
+.timelineLine {
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+  width: 2px;
+  flex-grow: 1;
+  background: var(--border);
+  height: 100%;
 }
 
-.documentTitle {
-  font-family: var(--font-outfit);
-  font-size: 2.25rem;
-  font-weight: 700;
-  letter-spacing: -0.04em;
-  margin-bottom: 1.25rem;
-  line-height: 1.1;
+.timelineContent {
+  flex: 1;
+  padding-top: 0.25rem;
 }
 
-.badgeRow {
-  display: flex;
-  gap: 0.75rem;
-  margin-bottom: 2rem;
-}
-
-.badge {
-  padding: 0.4rem 0.8rem;
-  border-radius: 20px;
-  background-color: #f5f5f7;
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--accent);
-}
-
-.badge.error {
-  color: var(--error);
-  background-color: rgba(255, 59, 48, 0.05);
-}
-
-.divider {
-  width: 100%;
-  height: 1px;
-  border-top: 1px dashed #e0e0e0;
-  margin: 1.25rem 0;
-}
-
-.infoSection {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-}
-
-.metaInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-}
-
-.metaItem {
-  display: flex;
-  flex-direction: column;
-}
-
-.label {
-  font-size: 0.6rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #a0a0a0;
-  margin-bottom: 0.2rem;
-}
-
-.value {
-  font-size: 0.75rem;
+.timelineLabel {
   font-weight: 600;
-  color: var(--accent);
-  text-transform: uppercase;
+  font-size: 0.85rem;
+  color: var(--foreground);
+  margin-bottom: 0.25rem;
 }
 
-.qrWrapper {
-  background: white;
-  padding: 0.4rem;
+.timelineDate {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* Hash Section */
+.hashSection {
+  margin-bottom: 1.5rem;
+}
+
+.hash {
+  display: block;
+  padding: 1rem;
+  background: var(--secondary);
   border-radius: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--muted);
+  word-break: break-all;
+  line-height: 1.6;
+  margin-top: 0.5rem;
 }
 
-/* Action Rows */
-.actionRows {
-  display: flex;
-  flex-direction: column;
-  background: #ffffff;
-  border-radius: 30px;
-  overflow: hidden;
-}
-
+/* Action Row */
 .actionRow {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.1rem 1.25rem;
-  border-bottom: 1px solid #f0f0f0;
-  transition: background 0.2s;
-  cursor: pointer;
-}
-
-.actionRow:last-child {
-  border-bottom: none;
-}
-
-.actionRow:hover {
-  background-color: #fafafa;
-}
-
-.actionLeft {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.actionIcon {
-  color: var(--foreground);
-  opacity: 0.7;
-}
-
-.actionText {
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.chevron {
-  color: #c0c0c0;
-}
-
-/* Warning Box for Tampered State */
-.warningBox {
-  background: #ffffff;
-  border-radius: 30px;
-  padding: 2rem;
-  border: 1px solid rgba(255, 59, 48, 0.1);
-  display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 0;
+}
+
+/* Warning Box */
+.warningBox {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: rgba(217, 83, 79, 0.05);
+  border: 1px solid var(--error);
+  border-radius: 20px;
+}
+
+.warningBoxRevoked {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: rgba(217, 83, 79, 0.05);
+  border: 1px solid var(--error);
+  border-radius: 20px;
 }
 
 .warningHeader {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(217, 83, 79, 0.2);
+}
+
+.warningIcon svg {
+  color: var(--error);
+}
+
+.warningIconRevoked svg {
   color: var(--error);
 }
 
 .warningHeader h3 {
   font-size: 1.1rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  color: var(--error);
 }
 
 .warningText {
-  font-size: 0.875rem;
-  line-height: 1.5;
+  font-size: 0.9rem;
   color: var(--muted);
+  line-height: 1.7;
 }
 
 .riskList {
+  margin-top: 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
 .riskItem {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--error);
-  opacity: 0.8;
+  font-size: 0.85rem;
+  color: var(--muted);
+  padding-left: 1rem;
 }
 
+/* Footer */
 .footerText {
   text-align: center;
   font-size: 0.7rem;
-  color: #a0a0a0;
-  margin-top: 0.5rem;
-  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 3rem;
   letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Action Link */
+.actionLink {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background: var(--secondary);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.actionLink:hover {
+  border-color: var(--border);
+  background: var(--card);
+}
+
+.actionIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--accent-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+}
+
+.actionText {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.chevron {
+  margin-left: auto;
+  opacity: 0.4;
+}
+
+/* Mobile */
+@media (max-width: 900px) {
+  .infoGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 10rem 1rem 4rem;
+  }
+
+  .topNav {
+    left: 1rem;
+    right: 1rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .ticketCard {
+    border-radius: 24px;
+    padding: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .statusCircle {
+    width: 60px;
+    height: 60px;
+    font-size: 1.75rem;
+  }
+
+  .previewRow {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .previewCircle {
+    width: 110px;
+    height: 110px;
+  }
+
+  .timelineItem {
+    gap: 0.75rem;
+  }
+
+  .timelineIcon {
+    width: 28px;
+    height: 28px;
+    font-size: 0.75rem;
+  }
 }
 
 @media (max-width: 480px) {
-  .page {
-    padding: 0.5rem;
+  .timeline {
+    margin-left: 0.5rem;
   }
 
-  .main {
-    padding-top: 1rem; /* Minimal gap on mobile */
-    gap: 0.75rem;
-  }
-  
-  .ticketCard {
-    padding: 2rem 1.25rem;
-    border-radius: 30px;
-  }
-  
-  .documentTitle {
-    font-size: 1.8rem;
-  }
-
-  .cardHeader {
-    margin-bottom: 1.5rem;
+  .timelineLine {
+    left: 12px !important;
   }
 }

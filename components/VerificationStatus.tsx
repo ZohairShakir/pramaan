@@ -1,22 +1,28 @@
 import styles from './VerificationStatus.module.css';
 
 interface VerificationStatusProps {
-  status: 'verified' | 'tampered' | 'not_found';
+  status: 'verified' | 'tampered' | 'revoked' | 'not_found';
 }
 
 export default function VerificationStatus({ status }: VerificationStatusProps) {
   const content = {
     verified: {
-      icon: '✔',
+      icon: '✓',
       title: 'VERIFIED',
       subtitle: 'This document is authentic and has not been altered.',
       colorClass: styles.verified,
     },
     tampered: {
-      icon: '✖',
+      icon: '✗',
       title: 'TAMPERED',
       subtitle: 'This document has been modified and cannot be trusted.',
       colorClass: styles.tampered,
+    },
+    revoked: {
+      icon: '✕',
+      title: 'REVOKED',
+      subtitle: 'This document has been revoked by the issuer and is no longer valid.',
+      colorClass: styles.revoked,
     },
     not_found: {
       icon: '?',

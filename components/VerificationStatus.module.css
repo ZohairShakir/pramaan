@@ -41,6 +41,11 @@
   color: var(--error);
 }
 
+.revoked .icon,
+.revoked .title {
+  color: var(--error);
+}
+
 .notFound .icon,
 .notFound .title {
   color: var(--accent);

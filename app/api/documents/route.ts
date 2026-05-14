@@ -3,79 +3,83 @@ import { prisma } from '@/lib/prisma';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 import crypto from 'crypto';
-
-export const runtime = 'nodejs';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/authOptions';
 
 // Ensure uploads directory exists
 const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
 
+export const runtime = 'nodejs';
+
 export async function POST(request: NextRequest) {
   try {
-    // For now, accept form data with file info
-    // In production, you'd handle actual file uploads to storage
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const userId = (session.user as any)?.id;
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
-    const fileName = formData.get('fileName') as string | null;
-    const fileSize = formData.get('fileSize') as string | null;
-    const mimeType = formData.get('mimeType') as string | null;
+    const category = formData.get('category') as string || 'General';
+    const recipientName = formData.get('recipientName') as string | null;
+    const recipientEmail = formData.get('recipientEmail') as string | null;
+    const metadataStr = formData.get('metadata') as string | null;
 
-    if (!file && !fileName) {
+    if (!file) {
       return NextResponse.json(
         { error: 'No file provided' },
         { status: 400 }
       );
     }
 
-    // Generate unique document ID
-    const docId = 'v_' + crypto.randomBytes(3).toString('hex');
+    // Generate unique document ID (cuid will be handled by prisma, but we can prefix it if needed)
+    // Actually, schema uses @id @default(cuid())
 
-    // Calculate hash based on file content or generate deterministic hash
-    let hash: string;
-    if (file) {
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-      hash = '0x' + crypto.createHash('sha256').update(buffer).digest('hex');
-    } else if (fileName) {
-      // For demo, create hash from name + timestamp
-      hash = '0x' + crypto.createHash('sha256')
-        .update(fileName + Date.now())
-        .digest('hex');
-    } else {
-      return NextResponse.json(
-        { error: 'Invalid file data' },
-        { status: 400 }
-      );
-    }
+    // Calculate SHA-256 hash
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    const hash = '0x' + crypto.createHash('sha256').update(buffer).digest('hex');
 
     // Save file to public/uploads (optional, for demo)
-    if (file && fileName) {
-      try {
-        await mkdir(uploadsDir, { recursive: true });
-        const bytes = await file.arrayBuffer();
-        const buffer = Buffer.from(bytes);
-        await writeFile(
-          path.join(uploadsDir, docId + '_' + fileName),
-          buffer
-        );
-      } catch (error) {
-        console.error('Failed to save file:', error);
-        // Continue without saving file
-      }
+    let fileUrl = null;
+    try {
+      await mkdir(uploadsDir, { recursive: true });
+      const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+      await writeFile(
+        path.join(uploadsDir, fileName),
+        buffer
+      );
+      fileUrl = `/uploads/${fileName}`;
+    } catch (error) {
+      console.error('Failed to save file:', error);
     }
 
-    // Store in database
+    // Store in database matching schema.prisma
     const document = await prisma.document.create({
       data: {
-        id: docId,
-        name: fileName || 'Untitled Document',
+        name: file.name,
         hash: hash,
-        fileUrl: file ? `/uploads/${docId}_${fileName}` : null,
-        size: fileSize ? parseInt(fileSize) : null,
-        mimeType: mimeType || null,
+        userId: userId,
+        category: category,
+        recipientName: recipientName,
+        recipientEmail: recipientEmail,
+        metadata: metadataStr ? JSON.parse(metadataStr) : {},
+        status: 'ACTIVE',
         verifiedAt: new Date(),
-        verifiedOn: new Date(),
-        // userId: null for now (no auth yet)
+        network: 'Polygon',
+        txHash: '0x' + crypto.randomBytes(32).toString('hex'), // Mock TX hash
       },
+    });
+
+    // Log the creation event
+    await prisma.verificationEvent.create({
+      data: {
+        documentId: document.id,
+        eventType: 'ISSUED',
+        ipAddress: request.headers.get('x-forwarded-for') || '127.0.0.1',
+        userAgent: request.headers.get('user-agent'),
+      }
     });
 
     return NextResponse.json({
@@ -84,11 +88,7 @@ export async function POST(request: NextRequest) {
         id: document.id,
         hash: document.hash,
         name: document.name,
-        date: document.createdAt.toLocaleDateString('en-US', {
-          month: 'long',
-          day: 'numeric',
-          year: 'numeric',
-        }),
+        createdAt: document.createdAt,
         verificationUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/verify/${document.id}`,
       },
     });
@@ -96,6 +96,52 @@ export async function POST(request: NextRequest) {
     console.error('Error creating document:', error);
     return NextResponse.json(
       { error: 'Failed to create document proof' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function GET(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const userId = (session.user as any)?.id;
+
+    const documents = await prisma.document.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        history: {
+          orderBy: { timestamp: 'desc' },
+          take: 5
+        }
+      }
+    });
+
+    // Calculate stats
+    const total = documents.length;
+    const verified = documents.filter(d => d.status === 'ACTIVE').length;
+    const revoked = documents.filter(d => d.status === 'REVOKED').length;
+    const suspended = documents.filter(d => d.status === 'SUSPENDED').length;
+    const totalVerifications = documents.reduce((sum, d) => sum + d.verificationCount, 0);
+
+    return NextResponse.json({
+      documents,
+      stats: {
+        total,
+        verified,
+        revoked,
+        suspended,
+        totalVerifications,
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching documents:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch documents' },
       { status: 500 }
     );
   }

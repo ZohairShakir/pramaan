@@ -1,41 +1,62 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import styles from './verify-input.module.css';
+import { FooterV2 as Footer } from '@/components/Landing/FooterV2';
+import Navbar from '@/components/Navbar';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { generateHash } from '@/lib/crypto';
+import OCRScanner from '@/components/OCRScanner';
+import { cn } from '@/lib/utils';
+import { Logo } from '@/components/Logo';
+import { 
+  AlertCircle, 
+  Loader2, 
+  ShieldCheck, 
+  Upload, 
+  Camera, 
+  Search, 
+  ArrowRight, 
+  Lock, 
+  Shield, 
+  Zap,
+  Globe,
+  Fingerprint,
+  Cpu,
+  History,
+  Scale
+} from 'lucide-react';
 
 export default function VerifyInputPage() {
   const [verifyId, setVerifyId] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
   const [verifyError, setVerifyError] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
+  const [showScanner, setShowScanner] = useState(false);
 
   const handleVerifyFile = async (file: File) => {
     setIsVerifying(true);
     setVerifyError(null);
 
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-
+      const hash = await generateHash(file);
       const response = await fetch('/api/verify', {
         method: 'POST',
-        body: formData,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hash }),
       });
 
       const data = await response.json();
-
       if (!response.ok || !data.found) {
-        throw new Error(data.message || 'Document not found in blockchain records');
+        throw new Error(data.message || 'Document fingerprint not recognized in the global registry.');
       }
-
       window.location.href = `/verify/${data.document.id}`;
     } catch (err) {
-      console.error('Verification error:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Failed to verify document';
-      setVerifyError(errorMessage);
+      setVerifyError(err instanceof Error ? err.message : 'Verification failed');
       setIsVerifying(false);
     }
   };
@@ -48,104 +69,210 @@ export default function VerifyInputPage() {
     }
   };
 
-  const triggerGallery = () => fileInputRef.current?.click();
-  const triggerCamera = () => cameraInputRef.current?.click();
-
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        {/* Top Premium Navigation Bar */}
-        <div className={styles.topNav}>
-          <div className={styles.navLeft}>
-            <div className={styles.navDot}></div>
-            <span className={styles.pageTitle}>Verification Hub</span>
-          </div>
-          <Link href="/" className={styles.homeBtn} aria-label="Go home">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          </Link>
-        </div>
+    <div className="min-h-screen bg-white text-black selection:bg-lime selection:text-black relative overflow-hidden">
+      <Navbar />
+      
+      {/* Background Accents */}
+      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#F2E6E1]/30 rounded-full blur-[120px] -mr-96 -mt-96 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-lime/5 rounded-full blur-[100px] -ml-48 -mb-48 pointer-events-none" />
 
-        {/* Main Ticket Card */}
-        <div className={styles.ticketCard}>
-          <div className={styles.cardIcon}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          </div>
-
-          <h1 className={styles.title}>
-            Secure <span className={styles.accentText}>Check</span>
-          </h1>
-          <p className={styles.subtitle}>
-            Authenticate any Pramaan-anchored document using its unique ID or by uploading the original file.
-          </p>
-
-          <div className={styles.inputSection}>
-            <input 
-              type="text" 
-              placeholder="ENTER VERIFICATION ID" 
-              className={styles.input}
-              value={verifyId}
-              onChange={(e) => setVerifyId(e.target.value)}
-            />
-            <Link href={`/verify/${verifyId || 'demo'}`} className={styles.verifyButton}>
-              Authenticate ID
-            </Link>
-          </div>
-
-          <div className={styles.divider}>
-            <span>SECURE UPLOAD</span>
-          </div>
-
-          {/* File Upload Area */}
-          <div className={`${styles.uploadBox} ${isVerifying ? styles.verifying : ''}`}>
-            <input 
-              type="file" 
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              style={{ display: 'none' }}
-              accept=".pdf,.docx,.jpg,.png"
-            />
-            <input 
-              type="file" 
-              ref={cameraInputRef}
-              onChange={handleFileChange}
-              style={{ display: 'none' }}
-              accept="image/*"
-              capture="environment"
-            />
-
-            {isVerifying ? (
-              <div className={styles.loading}>
-                <div className={styles.spinner}></div>
-                <p className={styles.uploadText}>Analysing Hash...</p>
-              </div>
-            ) : (
-              <>
-                <p className={styles.uploadText}>Drop document to verify</p>
-                <div className={styles.compactOptions}>
-                  <button onClick={triggerGallery} className={styles.compactBtn}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{marginRight: '8px'}}><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
-                    Browse
-                  </button>
-                  <button onClick={triggerCamera} className={styles.compactBtn}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{marginRight: '8px'}}><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                    Capture
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-
-          {verifyError && (
-            <div className={styles.error}>
-              {verifyError}
+      <main className="pt-32 md:pt-48 pb-32 px-6 relative z-10">
+        <div className="max-w-7xl mx-auto space-y-32">
+          
+          {/* Header Section */}
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12">
+            <div className="space-y-8 max-w-3xl">
+                <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/5 text-[10px] font-bold uppercase tracking-widest text-black/50"
+                >
+                    <Globe size={12} />
+                    Global Audit Protocol v2.4
+                </motion.div>
+                <h1 className="text-6xl md:text-9xl font-bold tracking-tight leading-[0.8] uppercase">
+                    Audit <br />
+                    <span className="bg-lime px-4 py-2 rounded-sm inline-block mt-8">Authenticity.</span>
+                </h1>
+                <p className="text-lg md:text-xl text-black/40 font-medium leading-relaxed max-w-xl">
+                    Verify the cryptographic integrity of any institutional asset in seconds. Pramaan secures the global layer of decentralized trust.
+                </p>
             </div>
-          )}
-        </div>
+            
 
-        <div className={styles.footerText}>
-          Pramaan Cryptographic Verification Protocol
+          </div>
+
+          {/* Interaction Hub */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-stretch">
+            {/* Upload Zone (The Sensor Pad) */}
+            <div className="lg:col-span-8">
+                <div 
+                    className={cn(
+                        "relative group h-full min-h-[550px] rounded-[4.5rem] border-2 border-dashed flex flex-col items-center justify-center p-12 text-center transition-all duration-700",
+                        isDragging ? "border-black bg-black/5 scale-[1.01]" : "border-black/5 bg-[#F8F8F8]",
+                        isVerifying ? "pointer-events-none" : ""
+                    )}
+                    onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+                    onDragLeave={() => setIsDragging(false)}
+                    onDrop={(e) => { e.preventDefault(); setIsDragging(false); const file = e.dataTransfer.files?.[0]; if (file) handleVerifyFile(file); }}
+                >
+                    {isVerifying ? (
+                        <div className="space-y-12">
+                            <div className="relative">
+                                <Loader2 className="w-24 h-24 text-black animate-spin mx-auto opacity-5" />
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                                    <Logo size={80} className="animate-pulse" />
+                                </div>
+                            </div>
+                            <div className="space-y-4">
+                                <h3 className="text-4xl font-bold tracking-tight uppercase">Spectral Scan...</h3>
+                                <p className="text-[11px] font-bold uppercase tracking-[0.5em] text-black/20">Cryptographic Finality Check</p>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="space-y-16 relative z-10 w-full max-w-lg">
+                            <div className="space-y-8">
+                                <div className="w-28 h-28 rounded-[2.5rem] bg-black text-white flex items-center justify-center mx-auto shadow-2xl group-hover:rotate-6 transition-transform duration-500">
+                                    <Upload size={40} className="text-lime" />
+                                </div>
+                                <div className="space-y-4">
+                                    <h3 className="text-5xl font-bold tracking-tight uppercase">Sensor Pad</h3>
+                                    <p className="text-base font-medium text-black/40 leading-relaxed max-w-sm mx-auto">
+                                        Drop your digital record here to verify against the immutable genesis ledger.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+                                <button onClick={() => fileInputRef.current?.click()} className="flex-1 rounded-2xl bg-black text-white h-18 text-sm font-bold hover:bg-black/90 transition-all shadow-2xl shadow-black/20">
+                                    Select Record
+                                </button>
+                                <button 
+                                    onClick={() => setShowScanner(true)} 
+                                    className="w-18 h-18 rounded-2xl bg-white border border-black/10 hover:bg-black hover:text-lime flex items-center justify-center transition-all group/cam"
+                                >
+                                    <Camera size={28} className="transition-transform group-hover/cam:scale-110" />
+                                </button>
+                            </div>
+
+                            <p className="text-[10px] font-bold text-black/20 uppercase tracking-[0.4em]">
+                                Privacy First: Local Hash Generation Only
+                            </p>
+                        </div>
+                    )}
+
+                    {/* Error State */}
+                    <AnimatePresence>
+                        {verifyError && (
+                        <motion.div 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0 }}
+                            className="absolute bottom-12 left-12 right-12 flex items-center gap-6 p-10 rounded-[2.5rem] bg-white text-red-500 text-sm font-bold border border-red-50 shadow-2xl"
+                        >
+                            <AlertCircle className="w-8 h-8 flex-shrink-0" />
+                            <div className="space-y-1">
+                                <p className="uppercase tracking-widest text-[10px] opacity-40">Verification Failed</p>
+                                <p className="text-black">{verifyError}</p>
+                            </div>
+                        </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
+            </div>
+
+            {/* Sidebar Hub */}
+            <div className="lg:col-span-4 space-y-8">
+                <div className="bg-[#F2E6E1] rounded-[4rem] p-12 space-y-12 border border-black/5 flex flex-col justify-between h-full lg:h-auto">
+                    <div className="space-y-6">
+                        <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm">
+                            <Search size={28} className="text-black/30" />
+                        </div>
+                        <div className="space-y-2">
+                            <h4 className="text-3xl font-bold tracking-tight uppercase">Audit by ID</h4>
+                            <p className="text-sm text-black/40 font-medium leading-relaxed">Search via registry ID or transaction hash.</p>
+                        </div>
+                    </div>
+                    
+                    <div className="relative group">
+                        <input 
+                            type="text" 
+                            placeholder="PR_0X7D..." 
+                            className="w-full pl-8 pr-20 py-8 rounded-2xl bg-white border border-black/5 focus:border-black/20 transition-all text-sm font-bold text-black placeholder:text-black/10 outline-none shadow-sm"
+                            value={verifyId}
+                            onChange={(e) => setVerifyId(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && verifyId && (window.location.href = `/verify/${verifyId}`)}
+                        />
+                        <button 
+                            onClick={() => verifyId && (window.location.href = `/verify/${verifyId}`)}
+                            className={cn(
+                                "absolute right-4 top-1/2 -translate-y-1/2 w-14 h-14 rounded-xl flex items-center justify-center transition-all",
+                                verifyId ? "bg-black text-white shadow-2xl" : "bg-black/5 text-black/10"
+                            )}
+                        >
+                            <ArrowRight size={24} />
+                        </button>
+                    </div>
+                </div>
+
+                <div className="bg-black rounded-[3.5rem] p-12 space-y-8 text-white relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-lime/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                    <div className="relative z-10 space-y-6">
+                        <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center">
+                            <Scale size={28} className="text-lime" />
+                        </div>
+                        <div className="space-y-3">
+                            <h4 className="text-2xl font-bold uppercase tracking-tight">Legal Integrity</h4>
+                            <p className="text-sm text-white/40 leading-relaxed font-medium">
+                                Every audit provides a tamper-proof certificate recognized by institutional governance.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+
+          {/* Infrastructure Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-20 pt-32 border-t border-black/5">
+            {[
+              { icon: <History className="text-black" size={28} />, title: 'Full Traceability', desc: 'Every verification attempt is logged in the document history for institutional auditing.' },
+              { icon: <Lock className="text-black" size={28} />, title: 'Privacy Shield', desc: 'We only process document hashes locally. Your sensitive data never reaches our servers.' },
+              { icon: <Zap className="text-black" size={28} />, title: 'Genesis Speed', desc: 'Audit records against the global registry with sub-second cryptographic response.' }
+            ].map((f, i) => (
+              <div key={i} className="space-y-8 group">
+                <div className="w-18 h-18 rounded-3xl bg-[#F8F8F8] border border-black/5 flex items-center justify-center group-hover:bg-lime group-hover:scale-110 transition-all duration-700">
+                  {f.icon}
+                </div>
+                <div className="space-y-4">
+                  <h4 className="text-3xl font-bold tracking-tight uppercase">{f.title}</h4>
+                  <p className="text-base font-medium text-black/40 leading-relaxed italic">{f.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </main>
+
+      <Footer />
+      <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept=".pdf,.docx,.jpg,.png" />
+      
+      <AnimatePresence>
+        {showScanner && (
+          <OCRScanner 
+            onScanComplete={(data) => {
+              if (data.documentId) {
+                setVerifyId(data.documentId);
+                window.location.href = `/verify/${data.documentId}`;
+              } else {
+                setVerifyError('No document ID detected in the scan.');
+              }
+              setShowScanner(false);
+            }}
+            onClose={() => setShowScanner(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

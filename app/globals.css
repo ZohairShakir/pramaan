@@ -1,123 +1,112 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter);
+  --font-outfit: var(--font-outfit);
+  --font-serif: var(--font-outfit);
+  --font-rozha: var(--font-outfit);
+
+  --color-cream: #F9F7F2;
+  --color-forest: #142210;
+  --color-terracotta: #A6634B;
+  --color-charcoal: #121212;
+  --color-muted-beige: #E6E1D6;
+  --color-lime: #F2E6E1;
+}
+
 :root {
-  /* Ultra-Premium Minimalist Palette with Olive Green Accent */
-  --background: #ffffff;
-  --foreground: #000000;
-  
-  --primary: #000000;
-  --primary-foreground: #ffffff;
-  
-  --secondary: #f5f5f7;
-  --secondary-foreground: #000000;
-  
-  --accent: #6B7D5C; /* Olive Green - Professional & Earthy */
-  --accent-muted: rgba(107, 125, 92, 0.1);
-  
-  --card: #ffffff;
-  --card-foreground: #000000;
-  
-  --border: #e5e5e7;
-  --input: #f5f5f7;
-  
-  --muted: #86868b;
-  --muted-foreground: #1d1d1f;
-  
-  --success: #28cd41;
-  --error: #ff3b30;
-  
-  --radius: 0px; 
-  --radius-md: 4px;
-  --radius-lg: 8px;
-  
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  --background: 0 0% 100%;
+  --foreground: 0 0% 0%;
+  --primary: 0 0% 0%;
+  --accent: 19 33% 92%;
+  --accent-foreground: 0 0% 0%;
+  --border: rgba(0, 0, 0, 0.05);
+  --card-bg: #F8F8F8;
 }
 
-[data-theme='dark'] {
-  --background: #000000;
-  --foreground: #ffffff;
-  --primary: #ffffff;
-  --secondary: #1c1c1e;
-  --card: #1c1c1e;
-  --border: #333333;
-  --muted: #86868b;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-html,
 body {
-  height: 100%;
-  width: 100%;
   background-color: var(--background);
   color: var(--foreground);
+  font-family: var(--font-sans), sans-serif;
   overflow-x: hidden;
-}
-
-body {
-  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  line-height: 1.6;
-  letter-spacing: -0.01em;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
+h1, h2, h3, h4, .font-serif {
+  font-family: var(--font-outfit), sans-serif;
   letter-spacing: -0.03em;
-  line-height: 1.1;
+  font-weight: 600;
 }
 
-a {
-  text-decoration: none !important; /* Global removal of underlines */
-  color: inherit;
+.font-outfit {
+  font-family: var(--font-outfit), sans-serif;
 }
 
-button {
-  cursor: pointer;
-  border: none;
-  background: none;
-  font: inherit;
-  transition: all 0.2s ease;
+/* Luxury Minimalist Utilities */
+.glass {
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
 }
 
-/* Subtle selection color */
-::selection {
-  background: var(--accent);
-  color: white;
+.text-editorial {
+  letter-spacing: -0.01em;
+  line-height: 1.2;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
+.section-padding {
+  padding: 100px 24px;
 }
 
-::-webkit-scrollbar-track {
-  background: var(--background);
+@media (min-width: 1024px) {
+  .section-padding {
+    padding: 140px 80px;
+  }
 }
 
-::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 10px;
+.btn-premium {
+  @apply px-7 py-3.5 rounded-full transition-all duration-500 font-medium tracking-tight flex items-center justify-center gap-2;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--muted);
+.btn-primary {
+  @apply bg-forest text-cream hover:opacity-90 active:scale-95 shadow-lg shadow-forest/5;
 }
 
-/* Animation Utilities */
-.fade-in {
-  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+.btn-outline {
+  @apply border border-forest/10 text-forest hover:bg-forest hover:text-cream active:scale-95;
 }
 
+/* Animations */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.text-accent {
-  color: var(--accent) !important;
+.animate-fade-in {
+  animation: fadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* Halftone Pattern Effect - Refined */
+.halftone {
+  position: relative;
+}
+
+.halftone::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(rgba(20, 34, 16, 0.1) 0.5px, transparent 0.5px);
+  background-size: 32px 32px;
+  opacity: 0.1;
+  pointer-events: none;
+  z-index: 50;
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+

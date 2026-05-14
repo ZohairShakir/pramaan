@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import styles from './VerificationReveal.module.css';
 
 interface Props {
-  status: 'verified' | 'tampered';
+  status: 'verified' | 'revoked' | 'tampered';
   children: React.ReactNode;
 }
 
@@ -16,7 +16,7 @@ export default function VerificationReveal({ status, children }: Props) {
     // Start the expansion after a tiny delay
     const timer = setTimeout(() => {
       setIsAnimating(false);
-    }, 800); // Animation duration matches CSS
+    }, 800);
 
     const revealTimer = setTimeout(() => {
       setIsRevealed(true);
@@ -28,11 +28,21 @@ export default function VerificationReveal({ status, children }: Props) {
     };
   }, []);
 
+  const getStatusColor = (s: string) => {
+    switch (s) {
+      case 'verified': return styles.verified;
+      case 'revoked': return styles.revoked;
+      case 'tampered': return styles.tampered;
+      default: return styles.verified;
+    }
+  };
+
   return (
     <>
       {!isRevealed && (
         <div className={`${styles.overlay} ${!isAnimating ? styles.fadeOut : ''}`}>
-          <div className={`${styles.dot} ${status === 'verified' ? styles.verified : styles.tampered} ${!isAnimating ? styles.expand : ''}`}></div>
+          <div className={`${styles.dot} ${getStatusColor(status)} ${!isAnimating ? styles.expand : ''}`}></div>
+          <div className={styles.revealText}>Decentralizing Trust...</div>
         </div>
       )}
       <div className={`${styles.content} ${isRevealed ? styles.show : ''}`}>
