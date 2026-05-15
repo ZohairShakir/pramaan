@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid format. Allowed: PDF, DOCX, JPEG, PNG.' }, { status: 400 });
     }
     if (file.size > maxSize) {
-      return NextResponse.json({ error: 'Payload too large. Max size 7MB.' }, { status: 400 });
+      return NextResponse.json({ error: 'file is too big' }, { status: 400 });
     }
 
     // Calculate SHA-256 hash

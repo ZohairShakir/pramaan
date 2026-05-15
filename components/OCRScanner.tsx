@@ -119,7 +119,7 @@ export default function OCRScanner({ onScanComplete, onClose }: OCRScannerProps)
     if (file) {
       const maxSize = 7 * 1024 * 1024; // 7MB
       if (file.size > maxSize) {
-        setStatus('File too large (Max 7MB)');
+        setStatus('file is too big');
         return;
       }
       

@@ -94,7 +94,7 @@ export default function SignupPage() {
         return;
       }
       if (file.size > maxSize) {
-        toast.error("File exceeds 7MB limit.");
+        toast.error("file is too big");
         return;
       }
       setUploadedFile(file);

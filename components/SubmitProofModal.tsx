@@ -51,7 +51,7 @@ export default function SubmitProofModal({ isOpen, onClose, onSuccess }: SubmitP
         return;
       }
       if (droppedFile.size > maxSize) {
-        toast.error("File is too large. Max size is 7MB.");
+        toast.error("file is too big");
         return;
       }
       setFile(droppedFile);
@@ -69,7 +69,7 @@ export default function SubmitProofModal({ isOpen, onClose, onSuccess }: SubmitP
         return;
       }
       if (selectedFile.size > maxSize) {
-        toast.error("File is too large. Max size is 7MB.");
+        toast.error("file is too big");
         return;
       }
       setFile(selectedFile);
