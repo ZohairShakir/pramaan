@@ -1,4 +1,5 @@
 import { createWorker, Worker } from 'tesseract.js';
+import jsQR from 'jsqr';
 
 let sharedWorker: Worker | null = null;
 
@@ -7,6 +8,47 @@ async function getWorker() {
     sharedWorker = await createWorker('eng');
   }
   return sharedWorker;
+}
+
+/**
+ * Scans an image for QR codes and extracts data if found
+ */
+export async function detectQRCode(imageSource: string | File): Promise<string | null> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = "Anonymous";
+    
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return resolve(null);
+      
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+      
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const code = jsQR(imageData.data, imageData.width, imageData.height);
+      
+      if (code) {
+        resolve(code.data);
+      } else {
+        resolve(null);
+      }
+    };
+    
+    img.onerror = () => resolve(null);
+    
+    if (typeof imageSource === 'string') {
+      img.src = imageSource;
+    } else {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        img.src = e.target?.result as string;
+      };
+      reader.readAsDataURL(imageSource);
+    }
+  });
 }
 
 /**
@@ -36,6 +78,24 @@ function isPotentialName(text: string): boolean {
 }
 
 export async function scanDocument(imageSource: string | File): Promise<{ issuer?: string; recipient?: string; documentId?: string; rawText: string }> {
+  // Priority 1: QR Code Detection
+  let documentIdFromQR = '';
+  try {
+    const qrData = await detectQRCode(imageSource);
+    if (qrData) {
+      console.log("[OCR] QR Code detected:", qrData);
+      // Try to extract ID from URL or raw data
+      // Example: https://pramaan.io/verify/cl... or just the ID
+      if (qrData.includes('/verify/')) {
+        documentIdFromQR = qrData.split('/verify/').pop()?.split('?')[0] || '';
+      } else if (qrData.length > 20) {
+        documentIdFromQR = qrData;
+      }
+    }
+  } catch (err) {
+    console.error("[OCR] QR Detection failed:", err);
+  }
+
   const worker = await getWorker();
   
   const { data: { text } } = await worker.recognize(imageSource);
@@ -44,13 +104,15 @@ export async function scanDocument(imageSource: string | File): Promise<{ issuer
   
   let issuer = '';
   let recipient = '';
-  let documentId = '';
+  let documentId = documentIdFromQR;
 
-  // 1. Aggressive Registry ID detection
-  const idPattern = /(PR_[0-9A-Z]{4,})|([0-9a-f]{32,64})/i;
-  const idMatch = text.match(idPattern);
-  if (idMatch) {
-    documentId = idMatch[0].toUpperCase();
+  // 1. Registry ID detection (Fallback if QR didn't find it)
+  if (!documentId) {
+    const idPattern = /(PR_[0-9A-Z]{4,})|([0-9a-f]{32,64})/i;
+    const idMatch = text.match(idPattern);
+    if (idMatch) {
+      documentId = idMatch[0].toUpperCase();
+    }
   }
 
   const nameIndicators = ['certifies that', 'presented to', 'name:', 'this is to certify', 'awarded to', 'proudly presented to', 'of completion to'];
