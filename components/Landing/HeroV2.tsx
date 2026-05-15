@@ -3,6 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { Apple, Play, ShieldCheck, Globe } from "lucide-react";
 import { SmartphoneMockup } from "./SmartphoneMockup";
 
@@ -37,12 +38,12 @@ export const HeroV2: React.FC = () => {
             transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-wrap gap-4 mb-16"
           >
-            <button className="flex items-center gap-2 bg-black text-white px-10 py-4 rounded-xl font-semibold hover:bg-black/90 transition-all">
+            <Link href="/signup" className="flex items-center gap-2 bg-black text-white px-10 py-4 rounded-xl font-semibold hover:bg-black/90 transition-all">
               Get Started
-            </button>
-            <button className="flex items-center gap-2 bg-white text-black border border-black/10 px-8 py-4 rounded-xl font-semibold hover:bg-black/5 transition-all">
+            </Link>
+            <Link href="/verify" className="flex items-center gap-2 bg-white text-black border border-black/10 px-8 py-4 rounded-xl font-semibold hover:bg-black/5 transition-all">
               Launch Verifier
-            </button>
+            </Link>
           </motion.div>
 
 

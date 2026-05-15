@@ -42,13 +42,37 @@ export default function SubmitProofModal({ isOpen, onClose, onSuccess }: SubmitP
     e.stopPropagation();
     setDragActive(false);
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setFile(e.dataTransfer.files[0]);
+      const droppedFile = e.dataTransfer.files[0];
+      const allowedTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'];
+      const maxSize = 7 * 1024 * 1024; // 7MB
+
+      if (!allowedTypes.includes(droppedFile.type)) {
+        toast.error("Invalid file type. Only PDF, DOCX, JPEG, and PNG are allowed.");
+        return;
+      }
+      if (droppedFile.size > maxSize) {
+        toast.error("File is too large. Max size is 7MB.");
+        return;
+      }
+      setFile(droppedFile);
     }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
+      const selectedFile = e.target.files[0];
+      const allowedTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'];
+      const maxSize = 7 * 1024 * 1024; // 7MB
+
+      if (!allowedTypes.includes(selectedFile.type)) {
+        toast.error("Invalid file type. Only PDF, DOCX, JPEG, and PNG are allowed.");
+        return;
+      }
+      if (selectedFile.size > maxSize) {
+        toast.error("File is too large. Max size is 7MB.");
+        return;
+      }
+      setFile(selectedFile);
     }
   };
 
@@ -146,7 +170,7 @@ export default function SubmitProofModal({ isOpen, onClose, onSuccess }: SubmitP
                       ref={fileInputRef} 
                       onChange={handleFileChange} 
                       className="hidden" 
-                      accept=".pdf,.jpg,.png" 
+                      accept=".pdf,.docx,.jpg,.jpeg,.png" 
                     />
                     
                     {!file ? (
@@ -156,7 +180,7 @@ export default function SubmitProofModal({ isOpen, onClose, onSuccess }: SubmitP
                         </div>
                         <div className="space-y-1">
                           <p className="text-sm font-bold">Drag & Drop or Browse</p>
-                          <p className="text-[10px] font-medium text-black/30">PDF, JPG, PNG (Max 5MB)</p>
+                          <p className="text-[10px] font-medium text-black/30">PDF, DOCX, JPEG, PNG (Max 7MB)</p>
                         </div>
                       </div>
                     ) : (

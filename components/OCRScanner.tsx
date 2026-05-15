@@ -117,6 +117,12 @@ export default function OCRScanner({ onScanComplete, onClose }: OCRScannerProps)
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      const maxSize = 7 * 1024 * 1024; // 7MB
+      if (file.size > maxSize) {
+        setStatus('File too large (Max 7MB)');
+        return;
+      }
+      
       const reader = new FileReader();
       reader.onload = (event) => {
         const dataUrl = event.target?.result as string;
@@ -133,36 +139,27 @@ export default function OCRScanner({ onScanComplete, onClose }: OCRScannerProps)
     setStatus('Initializing Neural Engine...');
 
     try {
-      // 1. Pre-process image for better accuracy
+      // 1. High-speed QR Check (Primary Path)
+      const qrData = await detectQRCode(dataUrl);
+      if (qrData) {
+        console.log("[SCANNER] QR Signature Detected:", qrData);
+        const idMatch = qrData.match(/\/verify\/([a-z0-9-]+)/i);
+        const documentId = idMatch ? idMatch[1] : qrData;
+        
+        // IMMEDIATE REDIRECT: Bypass all result UI
+        onScanComplete({ 
+            rawText: `QR_DATA: ${qrData}`, 
+            documentId: documentId,
+            issuer: 'QR Verified Authority'
+        });
+        return;
+      }
+
+      // 2. Pre-process image for OCR fallback
       let processedUrl = dataUrl;
       if (canvasRef.current) {
         processedUrl = await enhanceImage(canvasRef.current);
         setImage(processedUrl);
-      }
-
-      // 2. High-speed QR Check (Gold Standard)
-      if (canvasRef.current) {
-        const ctx = canvasRef.current.getContext('2d');
-        if (ctx) {
-          const imageData = ctx.getImageData(0, 0, canvasRef.current.width, canvasRef.current.height);
-          const code = jsQR(imageData.data, imageData.width, imageData.height);
-          if (code) {
-            setStatus('Found Signature QR...');
-            const url = code.data;
-            // Extract ID from URL if it's a verify link
-            const idMatch = url.match(/\/verify\/([a-z0-9-]+)/i);
-            const documentId = idMatch ? idMatch[1] : url;
-            
-            setExtractedData({ 
-                rawText: `QR_DATA: ${url}`, 
-                documentId: documentId,
-                issuer: 'QR Verified Authority'
-            });
-            setStatus('Scan Complete');
-            setIsProcessing(false);
-            return;
-          }
-        }
       }
 
       // 3. Spectral OCR Fallback
@@ -251,7 +248,7 @@ export default function OCRScanner({ onScanComplete, onClose }: OCRScannerProps)
                 <button className="bg-white/5 backdrop-blur-md text-white h-20 rounded-[1.5rem] font-bold text-sm border border-white/10" onClick={() => fileInputRef.current?.click()}>
                   Upload Record
                 </button>
-                <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileUpload} />
+                <input type="file" ref={fileInputRef} className="hidden" accept="image/jpeg,image/png" onChange={handleFileUpload} />
               </div>
             </div>
           )}

@@ -11,8 +11,8 @@ async function getWorker() {
 }
 
 /**
- * Scans an image for QR codes and extracts data if found
- * Optimized for small QRs using a multi-pass approach
+ * Best-in-Class QR Detection Engine
+ * Uses a multi-pass strategy with adaptive pre-processing to find even the smallest/faintest QRs
  */
 export async function detectQRCode(imageSource: string | File): Promise<string | null> {
   return new Promise((resolve) => {
@@ -21,7 +21,7 @@ export async function detectQRCode(imageSource: string | File): Promise<string |
     
     img.onload = () => {
       const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
       if (!ctx) return resolve(null);
       
       canvas.width = img.width;
@@ -29,21 +29,46 @@ export async function detectQRCode(imageSource: string | File): Promise<string |
       ctx.drawImage(img, 0, 0);
       
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      
-      // Pass 1: Standard detection
-      let code = jsQR(imageData.data, imageData.width, imageData.height);
+      const data = imageData.data;
+      const width = imageData.width;
+      const height = imageData.height;
+
+      // Pass 1: Raw Direct Scan
+      let code = jsQR(data, width, height, { inversionAttempts: "dontInvert" });
       if (code) return resolve(code.data);
 
-      // Pass 2: High Contrast / Binarization for small/faint QRs
-      const data = imageData.data;
+      // Pass 2: High Contrast Grayscale (Boost Signal)
+      const grayData = new Uint8ClampedArray(data.length);
+      for (let i = 0; i < data.length; i += 4) {
+        const avg = (data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114);
+        // Boost contrast: stretch 50-200 range to 0-255
+        const val = Math.min(255, Math.max(0, (avg - 50) * 1.7));
+        grayData[i] = grayData[i+1] = grayData[i+2] = val;
+        grayData[i+3] = 255;
+      }
+      code = jsQR(grayData, width, height, { inversionAttempts: "dontInvert" });
+      if (code) return resolve(code.data);
+
+      // Pass 3: Hard Binarization (Binary Threshold)
+      const binData = new Uint8ClampedArray(data.length);
       for (let i = 0; i < data.length; i += 4) {
         const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-        const threshold = 128;
-        const val = avg > threshold ? 255 : 0;
-        data[i] = data[i+1] = data[i+2] = val;
+        const val = avg > 120 ? 255 : 0; // Fixed threshold for QR patterns
+        binData[i] = binData[i+1] = binData[i+2] = val;
+        binData[i+3] = 255;
       }
-      
-      code = jsQR(data, imageData.width, imageData.height);
+      code = jsQR(binData, width, height, { inversionAttempts: "dontInvert" });
+      if (code) return resolve(code.data);
+
+      // Pass 4: Inverted Scan (for dark-mode/white QRs)
+      const invData = new Uint8ClampedArray(data.length);
+      for (let i = 0; i < data.length; i += 4) {
+        invData[i] = 255 - data[i];
+        invData[i+1] = 255 - data[i+1];
+        invData[i+2] = 255 - data[i+2];
+        invData[i+3] = 255;
+      }
+      code = jsQR(invData, width, height, { inversionAttempts: "dontInvert" });
       if (code) return resolve(code.data);
 
       resolve(null);

@@ -5,6 +5,7 @@ import path from 'path';
 import crypto from 'crypto';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/authOptions';
+import { rateLimit } from '@/lib/ratelimit';
 
 // Ensure uploads directory exists
 const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
@@ -19,6 +20,18 @@ export async function POST(request: NextRequest) {
     }
 
     const userId = (session.user as any)?.id;
+    const ip = request.headers.get('x-forwarded-for') || '127.0.0.1';
+
+    // Rate Limiting: 10 docs per minute per user/IP
+    const { success, remaining } = await rateLimit(`doc_create_${userId || ip}`, 10, 60000);
+    if (!success) {
+      return NextResponse.json({ 
+        error: 'Too many requests. Please wait before creating more document proofs.' 
+      }, { 
+        status: 429,
+        headers: { 'X-RateLimit-Remaining': remaining.toString() }
+      });
+    }
 
     // Strict validation: Only verified issuers can anchor documents
     const user = await prisma.user.findUnique({
@@ -41,14 +54,24 @@ export async function POST(request: NextRequest) {
     const metadataStr = formData.get('metadata') as string | null;
 
     if (!file) {
-      return NextResponse.json(
-        { error: 'No file provided' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    // Generate unique document ID (cuid will be handled by prisma, but we can prefix it if needed)
-    // Actually, schema uses @id @default(cuid())
+    // 1. Media and Size Limiting (Production Hardening)
+    const allowedTypes = [
+        'application/pdf', 
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
+        'image/jpeg', 
+        'image/png'
+    ];
+    const maxSize = 7 * 1024 * 1024; // 7MB
+
+    if (!allowedTypes.includes(file.type)) {
+      return NextResponse.json({ error: 'Invalid format. Allowed: PDF, DOCX, JPEG, PNG.' }, { status: 400 });
+    }
+    if (file.size > maxSize) {
+      return NextResponse.json({ error: 'Payload too large. Max size 7MB.' }, { status: 400 });
+    }
 
     // Calculate SHA-256 hash
     const bytes = await file.arrayBuffer();
@@ -81,6 +104,7 @@ export async function POST(request: NextRequest) {
         metadata: metadataStr ? JSON.parse(metadataStr) : {},
         status: 'ACTIVE',
         verifiedAt: new Date(),
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Default expiry: 7 days
         network: 'Polygon',
         txHash: '0x' + crypto.randomBytes(32).toString('hex'), // Mock TX hash
       },

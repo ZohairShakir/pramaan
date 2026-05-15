@@ -55,20 +55,20 @@ export const FooterV2: React.FC = () => {
           <div>
             <h4 className="font-bold mb-6">Product</h4>
             <ul className="space-y-4 text-sm text-black/50">
-              <li><Link href="#" className="hover:text-black transition-colors">Features</Link></li>
-              <li><Link href="#" className="hover:text-black transition-colors">Pricing</Link></li>
-              <li><Link href="#" className="hover:text-black transition-colors">Integrations</Link></li>
-              <li><Link href="#" className="hover:text-black transition-colors">Enterprise</Link></li>
+              <li><Link href="/" className="hover:text-black transition-colors">Features</Link></li>
+              <li><Link href="/" className="hover:text-black transition-colors">Pricing</Link></li>
+              <li><Link href="/verify" className="hover:text-black transition-colors">Verifier</Link></li>
+              <li><Link href="/signup" className="hover:text-black transition-colors">Institutional</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="font-bold mb-6">Resources</h4>
             <ul className="space-y-4 text-sm text-black/50">
-              <li><Link href="#" className="hover:text-black transition-colors">Documentation</Link></li>
-              <li><Link href="#" className="hover:text-black transition-colors">API Reference</Link></li>
-              <li><Link href="#" className="hover:text-black transition-colors">Blog</Link></li>
-              <li><Link href="#" className="hover:text-black transition-colors">Community</Link></li>
+              <li><Link href="/docs" className="hover:text-black transition-colors">Documentation</Link></li>
+              <li><Link href="/docs" className="hover:text-black transition-colors">API Reference</Link></li>
+              <li><Link href="/" className="hover:text-black transition-colors">Blog</Link></li>
+              <li><Link href="/" className="hover:text-black transition-colors">Community</Link></li>
             </ul>
           </div>
 
@@ -76,7 +76,7 @@ export const FooterV2: React.FC = () => {
             <h4 className="font-bold mb-6">Support</h4>
             <div className="space-y-4 text-sm text-black/50">
                 <p>Need help? Contact our support team for quick assistance.</p>
-                <Link href="#" className="inline-block bg-black text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-black/90 transition-all">
+                <Link href="/docs" className="inline-block bg-black text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-black/90 transition-all">
                     Get Help
                 </Link>
             </div>

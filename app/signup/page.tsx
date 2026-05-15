@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Mail, Lock, User, Loader2, ArrowLeft, AlertCircle, ShieldCheck, Upload, CheckCircle2, KeyRound } from 'lucide-react';
+import { Mail, Lock, User, Loader2, ArrowLeft, AlertCircle, ShieldCheck, Upload, CheckCircle2, KeyRound, Eye, EyeOff } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Logo } from '@/components/Logo';
@@ -17,6 +17,7 @@ export default function SignupPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [correctOtp, setCorrectOtp] = useState('');
@@ -80,6 +81,22 @@ export default function SignupPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      const allowedTypes = [
+        'application/pdf', 
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
+        'image/jpeg', 
+        'image/png'
+      ];
+      const maxSize = 7 * 1024 * 1024; // 7MB
+
+      if (!allowedTypes.includes(file.type)) {
+        toast.error("Invalid format. Please use PDF, DOCX, or images.");
+        return;
+      }
+      if (file.size > maxSize) {
+        toast.error("File exceeds 7MB limit.");
+        return;
+      }
       setUploadedFile(file);
     }
   };
@@ -206,13 +223,20 @@ export default function SignupPage() {
                     <div className="relative">
                       <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-black/20 w-4 h-4" />
                       <input
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         placeholder="••••••••••••"
-                        className="w-full pl-12 pr-4 py-4 rounded-2xl bg-black/[0.03] border border-transparent focus:border-black/10 focus:bg-white transition-all text-sm font-semibold text-black outline-none"
+                        className="w-full pl-12 pr-12 py-4 rounded-2xl bg-black/[0.03] border border-transparent focus:border-black/10 focus:bg-white transition-all text-sm font-semibold text-black outline-none"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-black/20 hover:text-black transition-colors"
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -275,14 +299,18 @@ export default function SignupPage() {
                         <div className="w-12 h-12 rounded-2xl bg-black/5 flex items-center justify-center">
                           <Upload size={24} className="text-black/40" />
                         </div>
-                        <span className="text-sm font-bold text-black/40 uppercase tracking-widest">Upload Document</span>
+                        <span className="text-sm font-bold text-black/40 uppercase tracking-widest text-center px-4">
+                          Upload Document <br />
+                          <span className="text-[10px] opacity-60">PDF, DOCX, IMG (MAX 7MB)</span>
+                        </span>
                       </>
                     )}
                     <input
                       id="file-upload"
                       type="file"
                       className="hidden"
-                      onChange={(e) => setUploadedFile(e.target.files?.[0] || null)}
+                      accept=".pdf,.docx,.jpg,.jpeg,.png"
+                      onChange={handleFileChange}
                     />
                   </div>
                 </div>

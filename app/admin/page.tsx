@@ -24,6 +24,7 @@ export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [users, setUsers] = useState<any[]>([]);
+  const [view, setView] = useState<'pending' | 'all'>('pending');
   const [isLoading, setIsLoading] = useState(false);
   const [processingId, setProcessingId] = useState<string | null>(null);
 
@@ -31,26 +32,32 @@ export default function AdminPage() {
     e.preventDefault();
     if (password === '515253') {
       setIsAuthenticated(true);
-      fetchUsers();
+      fetchUsers('pending');
     } else {
       toast.error('Invalid administrative key');
     }
   };
 
-  const fetchUsers = async () => {
+  const fetchUsers = async (currentView: 'pending' | 'all' = view) => {
     setIsLoading(true);
     try {
-      const res = await fetch('/api/admin/users');
+      const res = await fetch(`/api/admin/users?view=${currentView}`);
       const data = await res.json();
       if (res.ok) {
         setUsers(data.users);
       }
     } catch (err) {
-      toast.error('Failed to fetch pending audits');
+      toast.error('Failed to fetch registry data');
     } finally {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchUsers(view);
+    }
+  }, [view]);
 
   const handleAction = async (userId: string, action: 'APPROVE' | 'REJECT') => {
     setProcessingId(userId);
@@ -113,16 +120,38 @@ export default function AdminPage() {
       <main className="max-w-7xl mx-auto py-24 px-8 space-y-12">
         <div className="flex flex-col md:flex-row justify-between items-end gap-8">
             <div className="space-y-4">
+                <div className="flex gap-4 mb-2">
+                    <button 
+                        onClick={() => setView('pending')}
+                        className={cn(
+                            "px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all",
+                            view === 'pending' ? "bg-black text-white" : "bg-black/5 text-black/40 hover:bg-black/10"
+                        )}
+                    >
+                        Pending Audits
+                    </button>
+                    <button 
+                        onClick={() => setView('all')}
+                        className={cn(
+                            "px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all",
+                            view === 'all' ? "bg-black text-white" : "bg-black/5 text-black/40 hover:bg-black/10"
+                        )}
+                    >
+                        Full Registry
+                    </button>
+                </div>
                 <h2 className="text-6xl font-bold tracking-tighter uppercase leading-[0.8]">
-                    Pending <br /><span className="bg-lime px-4 py-1 rounded-sm inline-block mt-2">Audits.</span>
+                    {view === 'pending' ? 'Pending' : 'Identity'} <br /><span className="bg-lime px-4 py-1 rounded-sm inline-block mt-2">{view === 'pending' ? 'Audits' : 'Registry'}.</span>
                 </h2>
                 <p className="text-black/40 font-medium max-w-md">
-                    Review institutional identities and verify their authority to issue cryptographic proofs.
+                    {view === 'pending' 
+                        ? 'Review institutional identities and verify their authority to issue cryptographic proofs.'
+                        : 'Complete list of all enrolled institutions and administrators within the trust network.'}
                 </p>
             </div>
             <div className="flex items-center gap-4 bg-black text-white px-8 py-4 rounded-[2rem]">
                 <div className="text-right">
-                    <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest">Active Requests</p>
+                    <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest">{view === 'pending' ? 'Active Requests' : 'Total Identities'}</p>
                     <p className="text-2xl font-bold">{users.length}</p>
                 </div>
                 <div className="w-px h-10 bg-white/10 mx-2" />

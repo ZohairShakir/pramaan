@@ -2,9 +2,20 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { sendWelcomeEmail } from '@/lib/email';
+import { rateLimit } from '@/lib/ratelimit';
 
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get('x-forwarded-for') || '127.0.0.1';
+    
+    // Rate Limit: 5 signups per 15 minutes per IP
+    const { success } = await rateLimit(`signup_${ip}`, 5, 900000);
+    if (!success) {
+      return NextResponse.json({ 
+        error: 'Too many registration attempts. Please try again in 15 minutes.' 
+      }, { status: 429 });
+    }
+
     const { name, email, password, hasSubmittedProof } = await req.json();
     console.log(`[SIGNUP_API] Attempting registration for: ${email}`);
 
