@@ -260,52 +260,34 @@ export default async function VerificationPage({ params }: VerificationPageProps
                             </div>
                         </div>
                     </div>
+                </div>
 
-                            <div className="pt-10 border-t border-black/5 space-y-6">
-                                <div className="flex gap-4">
-                                    <button className="flex-1 flex items-center justify-center gap-3 bg-black text-white h-16 rounded-2xl font-bold text-sm hover:bg-black/90 transition-all shadow-xl shadow-black/10">
-                                        <Download size={18} />
-                                        Download Proof
-                                    </button>
-                                    <button className="w-16 h-16 flex items-center justify-center bg-[#F8F8F8] border border-black/5 rounded-2xl text-black hover:bg-black hover:text-white transition-all">
-                                        <Share2 size={18} />
-                                    </button>
+                {/* Technical Audit Log */}
+                <div className="p-12 space-y-12 border-t border-black/5 bg-[#F8F8F8]/50">
+                    <div className="flex justify-between items-center">
+                        <h3 className="text-xl font-bold flex items-center gap-3">
+                            <History size={22} className="text-black/30" />
+                            Institutional Audit Trail
+                        </h3>
+                        <span className="px-3 py-1 bg-lime text-black text-[10px] font-bold uppercase tracking-widest rounded-full">Genesis Live</span>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                        {data.history.map((event: any, i: number) => (
+                            <div key={i} className="flex gap-6 items-start">
+                                <div className="w-10 h-10 rounded-xl bg-white border border-black/5 flex items-center justify-center flex-shrink-0 shadow-sm text-black/20">
+                                    {event.eventType === 'ISSUED' ? <FileText size={18} /> : <CheckCircle2 size={18} />}
                                 </div>
-                                <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-black/20 justify-center">
-                                    <Lock size={12} />
-                                    End-to-End Cryptography
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-3">
+                                        <span className="text-[10px] font-bold uppercase tracking-widest text-black/40">{event.eventType}</span>
+                                        <span className="text-[10px] text-black/20 font-bold">{new Date(event.timestamp).toLocaleDateString()}</span>
+                                    </div>
+                                    <p className="text-sm font-medium text-black/60 leading-relaxed">
+                                        {event.eventType === 'ISSUED' ? "Document settled on chain." : "Institutional verify request."}
+                                    </p>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-
-                    {/* Technical Audit Log */}
-                    <div className="bg-[#F8F8F8] rounded-[3.5rem] p-12 space-y-12 border border-black/5">
-                        <div className="flex justify-between items-center">
-                            <h3 className="text-xl font-bold flex items-center gap-3">
-                                <History size={22} className="text-black/30" />
-                                Institutional Audit Trail
-                            </h3>
-                            <span className="px-3 py-1 bg-lime text-black text-[10px] font-bold uppercase tracking-widest rounded-full">Genesis Live</span>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                            {data.history.map((event: any, i: number) => (
-                                <div key={i} className="flex gap-6 items-start">
-                                    <div className="w-10 h-10 rounded-xl bg-white border border-black/5 flex items-center justify-center flex-shrink-0 shadow-sm text-black/20">
-                                        {event.eventType === 'ISSUED' ? <FileText size={18} /> : <CheckCircle2 size={18} />}
-                                    </div>
-                                    <div className="space-y-1">
-                                        <div className="flex items-center gap-3">
-                                            <span className="text-[10px] font-bold uppercase tracking-widest text-black/40">{event.eventType}</span>
-                                            <span className="text-[10px] text-black/20 font-bold">{new Date(event.timestamp).toLocaleDateString()}</span>
-                                        </div>
-                                        <p className="text-sm font-medium text-black/60 leading-relaxed">
-                                            {event.eventType === 'ISSUED' ? "Document settled on chain." : "Institutional verify request."}
-                                        </p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                        ))}
                     </div>
                 </div>
             </div>
