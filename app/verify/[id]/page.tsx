@@ -148,7 +148,7 @@ export default async function VerificationPage({ params }: VerificationPageProps
     <div className="min-h-screen bg-white text-black selection:bg-lime selection:text-black">
       <Navbar />
 
-      <main className="pt-32 md:pt-48 pb-32 px-6 max-w-7xl mx-auto">
+      <main className="pt-24 md:pt-32 pb-32 px-6 max-w-7xl mx-auto">
         <div className="space-y-12">
             <Link href="/verify" className="inline-flex items-center text-black/40 hover:text-black transition-colors text-xs font-bold tracking-widest gap-2 uppercase">
               <ArrowLeft size={14} />
@@ -156,102 +156,110 @@ export default async function VerificationPage({ params }: VerificationPageProps
             </Link>
 
             <div className="bg-white rounded-[4rem] border border-black/5 overflow-hidden shadow-2xl">
-                {/* Hero Status Banner */}
-                <div className={cn("p-8 md:p-24 lg:p-32 text-center space-y-6 md:space-y-10 relative overflow-hidden", statusConfig.bg)}>
-                    <div className="w-24 h-24 md:w-32 md:h-32 rounded-[2.5rem] bg-white flex items-center justify-center mx-auto shadow-2xl relative z-10 animate-in zoom-in duration-700">
-                        <div className={statusConfig.accentColor}>{statusConfig.icon}</div>
+                {/* Compact Verification Header */}
+                <div className={cn("p-12 md:p-20 flex flex-col items-center text-center space-y-8 border-b border-black/5", statusConfig.bg)}>
+                    <div className="w-24 h-24 md:w-32 md:h-32 rounded-[2.5rem] bg-white flex items-center justify-center mx-auto shadow-2xl relative z-10">
+                        <CheckCircle2 className="w-14 h-14 text-[#3D541D]" strokeWidth={2.5} />
                     </div>
-                    <div className="space-y-6 relative z-10">
-                        <h1 className="text-4xl md:text-7xl lg:text-9xl font-bold tracking-tight uppercase leading-[0.8]">
-                            {statusConfig.label.split(' ')[0]} <br />
-                            <span className="bg-white px-6 py-2 rounded-sm text-black inline-block mt-4 md:mt-8">{statusConfig.label.split(' ')[1]}</span>
-                        </h1>
-                        <p className="text-black/30 font-bold text-xs md:text-sm uppercase tracking-[0.5em] flex items-center justify-center gap-4">
-                            <span className="w-8 h-px bg-black/10" />
-                            Global Registry Authenticated
-                            <span className="w-8 h-px bg-black/10" />
+                    
+                    <div className="space-y-4">
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white text-[10px] font-bold uppercase tracking-widest text-[#3D541D]">
+                           <ShieldCheck size={14} />
+                           {statusConfig.label}
+                        </div>
+                        <h1 className="text-4xl md:text-6xl font-bold tracking-tight">{data.recipientName}</h1>
+                        <p className="text-sm md:text-xl font-medium text-black/40">
+                           Authorized by <span className="text-black font-bold">{(data.user as any)?.organizationName || "Pramaan Institution"}</span>
                         </p>
                     </div>
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#3D541D08,transparent_70%)] pointer-events-none" />
                 </div>
 
-             {/* Content Grid */}
-             <div className="p-6 md:p-8 lg:p-12 space-y-12 md:space-y-16">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
-                        {/* Visual Proof Section */}
-                        <div className="space-y-8 md:space-y-12">
-                            <div className="p-6 md:p-12 bg-[#F8F8F8] rounded-[2.5rem] md:rounded-[3.5rem] border border-black/5 flex items-center justify-center group relative overflow-hidden aspect-square">
-                                <div className="relative z-10 flex flex-col items-center gap-8">
-                                    <Logo size={120} className="opacity-10 group-hover:opacity-100 transition-all duration-700 scale-90 group-hover:scale-100" />
-                                    <div className="text-center space-y-2">
-                                        <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-black/20">Digital Signature</p>
-                                        <p className="font-mono text-[9px] text-black/40 break-all max-w-[200px]">{data.hash}</p>
+                <div className="p-8 md:p-16 lg:p-24 space-y-24">
+                    {/* Document Preview & Core Details */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+                        {/* Digital Certificate Preview */}
+                        <div className="relative group">
+                            <div className="aspect-[3/4] bg-white rounded-2xl border-8 border-black/5 shadow-2xl flex flex-col p-12 relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-700">
+                                <div className="flex justify-between items-start mb-20">
+                                    <Logo size={60} className="opacity-80" />
+                                    <div className="text-right">
+                                        <p className="text-[10px] font-bold uppercase tracking-widest opacity-30">Registry ID</p>
+                                        <p className="font-mono text-[10px] font-bold">#{data.id.toUpperCase()}</p>
                                     </div>
                                 </div>
-                                <div className="absolute inset-0 bg-white/90 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-20">
-                                    <div className="text-center space-y-6">
-                                        <div className="w-20 h-20 bg-black rounded-3xl flex items-center justify-center mx-auto shadow-2xl">
-                                            <ShieldCheck size={32} className="text-lime" />
-                                        </div>
-                                        <p className="text-xs font-bold uppercase tracking-widest">Tamper-Proof Record</p>
+                                
+                                <div className="flex-1 flex flex-col justify-center space-y-6">
+                                    <div className="w-12 h-1 bg-lime" />
+                                    <h3 className="text-4xl font-bold tracking-tight">{data.name}</h3>
+                                    <div className="space-y-1">
+                                        <p className="text-[10px] font-bold uppercase tracking-widest opacity-30">Recipient</p>
+                                        <p className="text-xl font-bold">{data.recipientName}</p>
                                     </div>
                                 </div>
+
+                                <div className="pt-8 border-t border-black/5 flex justify-between items-end">
+                                    <div className="space-y-1">
+                                        <p className="text-[10px] font-bold uppercase tracking-widest opacity-30">Issued On</p>
+                                        <p className="text-sm font-bold">{new Date(data.verifiedAt!).toLocaleDateString()}</p>
+                                    </div>
+                                    <div className="w-12 h-12 bg-[#F2E6E1] rounded-xl flex items-center justify-center text-[#3D541D]">
+                                        <ShieldCheck size={24} />
+                                    </div>
+                                </div>
+
+                                {/* Holographic Overlay */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-lime/5 to-transparent pointer-events-none" />
                             </div>
                             
-                            <div className="grid grid-cols-2 gap-8 px-4">
-                                <div className="space-y-1">
-                                    <p className="text-[10px] font-bold text-black/30 uppercase tracking-widest">Secure Storage</p>
-                                    <p className="text-sm font-bold flex items-center gap-2">
-                                        <Globe2 size={14} className="text-[#3D541D]" />
-                                        Polygon Network
-                                    </p>
-                                </div>
-                                <div className="text-right space-y-1">
-                                    <p className="text-[10px] font-bold text-black/30 uppercase tracking-widest">Checking Speed</p>
-                                    <p className="text-sm font-bold flex items-center justify-end gap-2">
-                                        <Zap size={14} className="text-[#3D541D]" />
-                                        Instant Check
-                                    </p>
-                                </div>
-                            </div>
+                            {/* Visual Accents */}
+                            <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-lime rounded-full blur-[60px] opacity-20 -z-10" />
+                            <div className="absolute -top-6 -left-6 w-24 h-24 bg-black/5 rounded-full blur-[40px] opacity-20 -z-10" />
                         </div>
 
-                        {/* Record Details Section */}
+                        {/* Technical Integrity Panel */}
                         <div className="space-y-12">
-                            <div className="space-y-10">
-                                <div className="space-y-4">
-                                    <span className="text-[10px] font-bold uppercase tracking-widest text-black/30 flex items-center gap-2">
-                                        <FileText size={12} /> Registry Entry
-                                    </span>
-                                    <h2 className="text-3xl md:text-7xl font-bold tracking-tight leading-tight">{data.name}</h2>
-                                    <div className="flex flex-wrap gap-2">
-                                        <span className="px-3 py-1 bg-black/5 rounded-full text-[9px] font-bold uppercase tracking-widest">ID: {data.id.slice(0, 8).toUpperCase()}</span>
-                                        <span className="px-3 py-1 bg-black/5 rounded-full text-[9px] font-bold uppercase tracking-widest">{data.category}</span>
+                            <div className="space-y-8">
+                                <h3 className="text-2xl font-bold uppercase tracking-tighter">Security Metadata</h3>
+                                
+                                <div className="space-y-6">
+                                    <div className="p-6 rounded-3xl bg-[#F8F8F8] border border-black/5 space-y-3">
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-[10px] font-bold uppercase tracking-widest text-black/30">Cryptographic Hash</span>
+                                            <Fingerprint size={14} className="text-black/20" />
+                                        </div>
+                                        <p className="font-mono text-[10px] text-black/40 break-all leading-relaxed">{data.hash}</p>
                                     </div>
-                                </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 pt-8 md:pt-10 border-t border-black/5">
-                                    <div className="space-y-2">
-                                        <span className="text-[10px] font-bold uppercase tracking-widest text-black/30">Issuer Authority</span>
-                                        <p className="text-lg md:text-xl font-bold">{(data.user as any)?.organizationName || "Pramaan Institution"}</p>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <span className="text-[10px] font-bold uppercase tracking-widest text-black/30">Authorized Recipient</span>
-                                        <p className="text-lg md:text-xl font-bold">{data.recipientName || "Public Record"}</p>
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-8 md:gap-12">
-                                    <div className="space-y-2">
-                                        <span className="text-[10px] font-bold uppercase tracking-widest text-black/30">Genesis Date</span>
-                                        <p className="text-base md:text-lg font-bold">{new Date(data.verifiedAt!).toLocaleDateString('en-IN', { dateStyle: 'medium' })}</p>
-                                    </div>
-                                    <div className="space-y-2 text-right md:text-left">
-                                        <span className="text-[10px] font-bold uppercase tracking-widest text-black/30">Total Audits</span>
-                                        <p className="text-base md:text-lg font-bold">{data.verificationCount} Records</p>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="p-6 rounded-3xl bg-[#F8F8F8] border border-black/5 space-y-1">
+                                            <span className="text-[10px] font-bold uppercase tracking-widest text-black/30">Network</span>
+                                            <p className="text-sm font-bold flex items-center gap-2">
+                                                <Globe size={14} className="text-[#3D541D]" />
+                                                Polygon POS
+                                            </p>
+                                        </div>
+                                        <div className="p-6 rounded-3xl bg-[#F8F8F8] border border-black/5 space-y-1">
+                                            <span className="text-[10px] font-bold uppercase tracking-widest text-black/30">Audit Count</span>
+                                            <p className="text-sm font-bold flex items-center gap-2">
+                                                <History size={14} className="text-[#3D541D]" />
+                                                {data.verificationCount} Checks
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <div className="flex gap-4">
+                                <button className="flex-1 flex items-center justify-center gap-3 bg-black text-white h-16 rounded-2xl font-bold text-sm hover:bg-black/90 transition-all shadow-xl shadow-black/10">
+                                    <Download size={18} />
+                                    Download Proof
+                                </button>
+                                <button className="w-16 h-16 flex items-center justify-center bg-[#F8F8F8] border border-black/5 rounded-2xl text-black hover:bg-black hover:text-white transition-all">
+                                    <Share2 size={18} />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
                             <div className="pt-10 border-t border-black/5 space-y-6">
                                 <div className="flex gap-4">
