@@ -37,7 +37,7 @@ export const FooterV2: React.FC = () => {
               <span className="text-black font-bold text-xl tracking-tight">Pramaan</span>
             </Link>
             <p className="text-black/40 text-sm leading-relaxed max-w-xs">
-              The platform of absolute trust. Verify and manage documents with cryptographic permanence.
+              A simple and reliable way to check and manage your documents safely. Permanent and easy to use.
             </p>
             <div className="flex gap-4">
               <Link href="#" className="w-10 h-10 rounded-full border border-black/5 flex items-center justify-center text-black/40 hover:text-black hover:border-black/20 transition-all">
@@ -73,15 +73,12 @@ export const FooterV2: React.FC = () => {
           </div>
 
           <div>
-            <h4 className="font-bold mb-6">Download</h4>
-            <div className="space-y-4">
-                <button className="w-full flex items-center justify-center gap-2 bg-black text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-black/90 transition-all">
-                    <Apple size={16} fill="white" />
-                    App Store
-                </button>
-                <div className="text-center">
-                    <p className="text-xs text-black/40">Coming soon to Android</p>
-                </div>
+            <h4 className="font-bold mb-6">Support</h4>
+            <div className="space-y-4 text-sm text-black/50">
+                <p>Need help? Contact our support team for quick assistance.</p>
+                <Link href="#" className="inline-block bg-black text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-black/90 transition-all">
+                    Get Help
+                </Link>
             </div>
           </div>
         </div>

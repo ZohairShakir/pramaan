@@ -16,11 +16,9 @@ export const NavbarV2: React.FC = () => {
 
   const navLinks = [
     { name: "Home", href: "/" },
-    { name: "About", href: "/about" },
+    { name: "Verify", href: "/verify" },
+    { name: "Create", href: "/create" },
     { name: "Pricing", href: "/pricing" },
-    { name: "Blog", href: "/blog" },
-    { name: "Pages", href: "/pages" },
-    { name: "Cart(0)", href: "/cart" },
   ];
 
   return (
@@ -54,10 +52,9 @@ export const NavbarV2: React.FC = () => {
 
         {/* CTA */}
         <div className="flex items-center gap-4">
-          <button className="hidden lg:flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-black/90 transition-all">
-            <Apple size={16} fill="white" />
-            Download for iOS
-          </button>
+          <Link href="/signup" className="hidden lg:flex items-center gap-2 bg-black text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-black/90 transition-all">
+            Get Started
+          </Link>
           
           {/* Mobile Menu Toggle */}
           <button className="md:hidden text-black">

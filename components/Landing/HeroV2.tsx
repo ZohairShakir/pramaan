@@ -18,8 +18,8 @@ export const HeroV2: React.FC = () => {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="text-5xl md:text-7xl lg:text-8xl font-bold text-black leading-[1.1] tracking-[-0.04em] mb-8"
           >
-            The trust <span className="bg-lime px-4 py-1 rounded-sm">layer</span> <br />
-            for institutions
+            Trust made <span className="bg-lime px-4 py-1 rounded-sm">easy</span> <br />
+            for everyone
           </motion.h1>
 
           <motion.p
@@ -28,7 +28,7 @@ export const HeroV2: React.FC = () => {
             transition={{ delay: 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="text-lg md:text-xl text-black/50 max-w-lg mb-12 leading-relaxed"
           >
-            Pramaan provides cryptographic document verification with absolute permanence. Issue, verify, and manage authentic credentials at scale.
+            Pramaan helps you check if any document is real in seconds. It's safe, simple, and permanent. No more fake certificates.
           </motion.p>
 
           <motion.div
@@ -71,8 +71,8 @@ export const HeroV2: React.FC = () => {
                         <ShieldCheck size={20} className="text-black" />
                     </div>
                     <div>
-                        <p className="text-[10px] font-bold text-black/30 uppercase tracking-widest">Finality</p>
-                        <p className="text-sm font-bold text-black tracking-tight">Instant Settle</p>
+                        <p className="text-[10px] font-bold text-black/30 uppercase tracking-widest">Performance</p>
+                        <p className="text-sm font-bold text-black tracking-tight">Instant Check</p>
                     </div>
                 </div>
              </div>
@@ -85,8 +85,8 @@ export const HeroV2: React.FC = () => {
                         <Globe size={20} className="text-lime" />
                     </div>
                     <div>
-                        <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest">Registry</p>
-                        <p className="text-sm font-bold text-white tracking-tight">Global Sync</p>
+                        <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest">System</p>
+                        <p className="text-sm font-bold text-white tracking-tight">Always Ready</p>
                     </div>
                 </div>
              </div>

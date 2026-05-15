@@ -90,14 +90,14 @@ export default function VerifyInputPage() {
                     className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/5 text-[10px] font-bold uppercase tracking-widest text-black/50"
                 >
                     <Globe size={12} />
-                    Global Audit Protocol v2.4
+                    Global Check System v2.4
                 </motion.div>
                 <h1 className="text-5xl md:text-7xl lg:text-9xl font-bold tracking-tight leading-[0.8] uppercase">
-                    Audit <br />
-                    <span className="bg-lime px-4 py-2 rounded-sm inline-block mt-4 md:mt-8">Authenticity.</span>
+                    Check if it's <br />
+                    <span className="bg-lime px-4 py-2 rounded-sm inline-block mt-4 md:mt-8">Real.</span>
                 </h1>
                 <p className="text-base md:text-xl text-black/40 font-medium leading-relaxed max-w-xl">
-                    Verify the cryptographic integrity of any institutional asset in seconds. Pramaan secures the global layer of decentralized trust.
+                    Check if any document is real in seconds. Pramaan makes trust simple and safe for everyone.
                 </p>
             </div>
             

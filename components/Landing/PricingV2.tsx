@@ -7,27 +7,27 @@ import Link from 'next/link';
 
 const plans = [
   {
-    name: "Starter",
+    name: "Free",
     price: "0",
-    desc: "For individual issuers and testing.",
-    features: ["Up to 10 anchors/mo", "Polygon POS Settlement", "Standard QR Proofs", "Community Support"],
+    desc: "For individuals and beginners.",
+    features: ["Up to 10 documents/mo", "Safe Storage", "Easy QR Checks", "Basic Support"],
     cta: "Start Free",
     popular: false
   },
   {
-    name: "Institutional",
-    price: "199",
-    desc: "For universities and organizations.",
-    features: ["Unlimited anchors", "Custom Issuer DID", "Bulk Processing", "Priority Settlement", "API Access"],
-    cta: "Join Network",
+    name: "Professional",
+    price: "9,999",
+    desc: "For colleges and companies.",
+    features: ["Unlimited documents", "Custom Your ID", "Bulk Uploads", "Fast Verification", "Full Access"],
+    cta: "Get Started",
     popular: true
   },
   {
     name: "Enterprise",
     price: "Custom",
-    desc: "For government and global scale.",
-    features: ["White-label Registry", "Dedicated Node", "Custom Smart Contracts", "SLA Guarantee", "24/7 Managed Support"],
-    cta: "Contact Sales",
+    desc: "For large organizations.",
+    features: ["Your Own Branding", "Private Setup", "Custom Solutions", "Guaranteed Support", "24/7 Assistance"],
+    cta: "Contact Us",
     popular: false
   }
 ];
@@ -44,7 +44,7 @@ export const PricingV2: React.FC = () => {
             className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/5 text-[10px] font-bold uppercase tracking-widest text-black/50"
           >
             <Shield size={12} className="text-black" />
-            Transparent Economics
+            Simple Pricing
           </motion.div>
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
@@ -53,7 +53,7 @@ export const PricingV2: React.FC = () => {
             transition={{ delay: 0.1 }}
             className="text-5xl md:text-7xl font-bold tracking-tight"
           >
-            Scale with <span className="bg-lime px-3 py-1 rounded-sm">Trust.</span>
+            Grow with <span className="bg-lime px-3 py-1 rounded-sm">Confidence.</span>
           </motion.h2>
         </div>
 
@@ -79,7 +79,7 @@ export const PricingV2: React.FC = () => {
                       {p.name}
                     </p>
                     <div className="flex items-baseline gap-1">
-                      {p.price !== "Custom" && <span className="text-2xl font-bold">$</span>}
+                      {p.price !== "Custom" && <span className="text-2xl font-bold">₹</span>}
                       <span className="text-6xl font-bold tracking-tighter">{p.price}</span>
                       {p.price !== "Custom" && <span className={cn("text-sm font-bold", p.popular ? "text-white/40" : "text-black/30")}>/mo</span>}
                     </div>

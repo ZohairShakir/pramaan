@@ -16,6 +16,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Logo } from '@/components/Logo';
+import VerificationBanner from '@/components/VerificationBanner';
 
 export const dynamic = 'force-dynamic';
 
@@ -67,6 +68,10 @@ export default async function DashboardPage() {
       <Navbar />
 
        <main className="pt-32 md:pt-48 pb-16 px-6 max-w-7xl mx-auto space-y-12">
+        <VerificationBanner 
+          isVerified={user?.isVerifiedIssuer || false} 
+          hasSubmitted={user?.hasSubmittedProof || false} 
+        />
         
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">

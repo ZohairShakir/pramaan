@@ -12,7 +12,7 @@ import {
   Loader2, ArrowRight, Hash, User, Building, QrCode, 
   Download, RotateCcw, AlertCircle, Eye, Zap, 
   Fingerprint as FingerIcon, Globe, Sparkles, Lock,
-  Share2, Mail
+  Share2, Mail, ShieldAlert
 } from 'lucide-react';
 import QRSection from '@/components/QRSection';
 import DocumentPreviewWrapper from '@/components/DocumentPreviewWrapper';
@@ -21,6 +21,7 @@ import { generateHash } from '@/lib/crypto';
 import OCRScanner from '@/components/OCRScanner';
 import { scanDocument, fuzzyMatch } from '@/lib/ocr';
 import { Logo } from '@/components/Logo';
+import SubmitProofModal from '@/components/SubmitProofModal';
 
 export default function CreateProofPage() {
   const { data: session } = useSession();
@@ -32,12 +33,32 @@ export default function CreateProofPage() {
   const [recipientEmail, setRecipientEmail] = useState('');
   const [category, setCategory] = useState('Education');
 
+  const [isVerified, setIsVerified] = useState<boolean | null>(null);
+  const [isProofModalOpen, setIsProofModalOpen] = useState(false);
+
+  const fetchStatus = () => {
+    if (session?.user) {
+      fetch('/api/user/status')
+        .then(res => res.json())
+        .then(data => {
+          if (data.isVerifiedIssuer !== undefined) {
+            setIsVerified(data.isVerifiedIssuer);
+          }
+        })
+        .catch(err => console.error("Failed to fetch status", err));
+    }
+  };
+
   useEffect(() => {
     if (session?.user) {
       const org = (session.user as any).organizationName || session.user.name || '';
       setIssuerOrg(org);
+      fetchStatus();
     }
   }, [session]);
+
+  // Fallback to session if fetch hasn't completed
+  const effectiveIsVerified = isVerified !== null ? isVerified : (session?.user as any)?.isVerifiedIssuer || false;
   
   const [proof, setProof] = useState<{
     id: string;
@@ -143,7 +164,35 @@ export default function CreateProofPage() {
       
        <main className="pt-20 md:pt-32 pb-16 md:pb-24 px-4 relative z-10">
         <AnimatePresence mode="wait">
-          {!proof ? (
+          {!effectiveIsVerified ? (
+            <motion.div 
+              key="locked"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="max-w-4xl mx-auto text-center space-y-12 py-20"
+            >
+              <div className="w-24 h-24 bg-amber-50 rounded-[2.5rem] flex items-center justify-center mx-auto shadow-2xl shadow-amber-500/10">
+                <ShieldAlert size={40} className="text-amber-500" />
+              </div>
+              <div className="space-y-6">
+                <h1 className="text-4xl md:text-6xl font-bold tracking-tight">Identity <br /><span className="bg-amber-100 px-4 py-1 rounded-sm inline-block mt-2">Required.</span></h1>
+                <p className="text-lg text-black/40 font-medium max-w-lg mx-auto">
+                  To maintain the absolute trust of the Pramaan registry, only verified institutional nodes can anchor documents.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-4 justify-center">
+                <button 
+                  onClick={() => setIsProofModalOpen(true)}
+                  className="px-10 h-16 bg-black text-white rounded-2xl font-bold text-sm flex items-center justify-center gap-3 hover:bg-black/90 transition-all shadow-xl shadow-black/10"
+                >
+                  Submit Proof for Audit
+                </button>
+                <Link href="/dashboard" className="px-10 h-16 bg-white border border-black/10 text-black rounded-2xl font-bold text-sm flex items-center justify-center hover:bg-black/5 transition-all">
+                  Back to Console
+                </Link>
+              </div>
+            </motion.div>
+          ) : !proof ? (
             <motion.div 
               key="form"
               initial={{ opacity: 0, y: 30 }}
@@ -159,7 +208,7 @@ export default function CreateProofPage() {
                   className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/5 text-[10px] font-bold uppercase tracking-widest text-black/50"
                 >
                   <Globe size={12} className="animate-pulse" />
-                  Registry Issuance v2.1
+                  Document Creation v2.1
                 </motion.div>
                 
                 <motion.h1 
@@ -168,17 +217,17 @@ export default function CreateProofPage() {
                   transition={{ delay: 0.1 }}
                   className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.1]"
                 >
-                  Anchor <br /><span className="bg-lime px-4 py-1 rounded-sm inline-block mt-2 md:mt-4">Genesis.</span>
+                  Create <br /><span className="bg-lime px-4 py-1 rounded-sm inline-block mt-2 md:mt-4">Original.</span>
                 </motion.h1>
                 
                 <motion.p 
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
-                  className="text-lg md:text-xl text-black/40 font-medium leading-relaxed max-w-2xl"
+                  className="text-lg md:text-xl text-black/50 font-medium leading-relaxed max-w-2xl"
                 >
-                  Imprint an immutable cryptographic proof into the global registry. 
-                  Permanent, verifiable, and institutional-grade document anchoring.
+                  Create a permanent record that no one can fake. 
+                  Simple, safe, and reliable document verification.
                 </motion.p>
               </div>
 
@@ -311,11 +360,11 @@ export default function CreateProofPage() {
                             {isProcessing ? (
                                 <div className="flex items-center justify-center gap-4">
                                     <Loader2 className="animate-spin text-lime" />
-                                    <span>Settling on Chain...</span>
+                                    <span>Saving Securely...</span>
                                 </div>
                             ) : (
                                 <div className="flex items-center justify-center gap-3">
-                                    <span>Anchor Proof</span>
+                                    <span>Create Proof</span>
                                     <ArrowRight size={20} />
                                 </div>
                             )}
@@ -341,50 +390,39 @@ export default function CreateProofPage() {
               key="success"
               initial={{ opacity: 0, scale: 0.98, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              className="max-w-6xl mx-auto space-y-12"
+              className="max-w-6xl mx-auto space-y-8 md:space-y-12"
             >
-              <div className="bg-white rounded-[4rem] border border-black/5 overflow-hidden shadow-2xl">
+              <div className="bg-white rounded-[2rem] md:rounded-[4rem] border border-black/5 overflow-hidden shadow-2xl">
                 {/* Header Banner - Ceremonial Settle */}
-                <div className="bg-[#F2E6E1] p-20 md:p-40 text-center space-y-12 relative overflow-hidden">
+                <div className="bg-[#F2E6E1] p-10 md:p-40 text-center space-y-8 md:space-y-12 relative overflow-hidden">
                     <motion.div 
                         initial={{ scale: 0, rotate: -20 }}
                         animate={{ scale: 1, rotate: 0 }}
                         transition={{ type: 'spring', damping: 15 }}
-                        className="w-28 h-28 md:w-40 md:h-40 rounded-[3rem] bg-white flex items-center justify-center text-black mx-auto shadow-3xl relative z-10"
+                        className="w-20 h-20 md:w-40 md:h-40 rounded-[2rem] md:rounded-[3rem] bg-white flex items-center justify-center text-black mx-auto shadow-3xl relative z-10"
                     >
-                        <ShieldCheck size={80} className="text-[#3D541D]" />
+                        <ShieldCheck className="w-10 h-10 md:w-20 md:h-20 text-[#3D541D]" />
                     </motion.div>
-                    <div className="space-y-8 relative z-10">
-                        <h1 className="text-7xl md:text-[10rem] font-bold tracking-tight uppercase leading-[0.8]">
-                            Proof <br /><span className="bg-white px-6 py-2 rounded-sm text-black inline-block mt-6">Settled.</span>
+                    <div className="space-y-6 md:space-y-8 relative z-10">
+                        <h1 className="text-5xl md:text-[10rem] font-bold tracking-tight uppercase leading-[0.8]">
+                            Proof <br /><span className="bg-white px-4 py-1 md:px-6 md:py-2 rounded-sm text-black inline-block mt-4 md:mt-6">Settled.</span>
                         </h1>
                         <p className="text-black/30 font-bold text-xs md:text-base uppercase tracking-[0.6em] flex items-center justify-center gap-6">
                             <span className="w-12 h-px bg-black/10" />
-                            Registry Genesis Successful
+                            Success: Document Verified
                             <span className="w-12 h-px bg-black/10" />
                         </p>
                     </div>
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#3D541D10,transparent_70%)] pointer-events-none" />
-                    <Logo size={300} className="absolute -bottom-20 -right-20 opacity-[0.03] rotate-12" />
+                    <Logo size={300} className="absolute -bottom-20 -right-20 opacity-[0.03] rotate-12 hidden md:block" />
                 </div>
 
-                <div className="p-12 md:p-24 space-y-20">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-20 items-start">
+                <div className="p-6 md:p-24 space-y-12 md:space-y-20">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-20 items-start">
                         {/* Visual Registry Section */}
-                        <div className="lg:col-span-5 space-y-10">
-                            <div className="p-12 bg-[#F8F8F8] rounded-[4rem] border border-black/5 flex items-center justify-center group relative overflow-hidden aspect-square">
-                                <QRSection url={proof.verificationUrl} size={320} hideDescription={true} className="relative z-10 scale-110" />
-                                <div className="absolute inset-0 bg-white/95 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all duration-700 flex items-center justify-center z-20">
-                                    <div className="text-center space-y-8">
-                                        <div className="w-24 h-24 bg-black rounded-[2rem] flex items-center justify-center mx-auto shadow-2xl">
-                                            <Logo size={80} />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <p className="text-xs font-bold uppercase tracking-widest text-black">Registry Access QR</p>
-                                            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-black/30">Point to Verify</p>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div className="lg:col-span-5 space-y-8 md:space-y-10">
+                            <div className="p-4 md:p-12 bg-[#F8F8F8] rounded-[2rem] md:rounded-[4rem] border border-black/5 flex items-center justify-center group relative overflow-hidden">
+                                <QRSection url={proof.verificationUrl} size={280} hideDescription={true} className="relative z-10" />
                             </div>
                             <div className="flex justify-between items-center px-6">
                                 <div className="space-y-1">
@@ -409,10 +447,10 @@ export default function CreateProofPage() {
                             <div className="grid grid-cols-1 gap-12">
                                 <div className="space-y-4">
                                     <div className="flex items-center gap-3">
-                                        <span className="px-3 py-1 bg-lime text-black text-[10px] font-bold uppercase tracking-widest rounded-full">Genesis Proof</span>
-                                        <span className="text-[10px] font-bold uppercase tracking-widest text-black/30 tracking-[0.2em]">Registry Identity</span>
+                                        <span className="px-3 py-1 bg-lime text-black text-[10px] font-bold uppercase tracking-widest rounded-full">Original Proof</span>
+                                        <span className="text-[10px] font-bold uppercase tracking-widest text-black/30 tracking-[0.2em]">System ID</span>
                                     </div>
-                                    <p className="text-5xl md:text-7xl font-bold tracking-tighter">#{proof.id.toUpperCase()}</p>
+                                    <p className="text-3xl md:text-7xl font-bold tracking-tighter">#{proof.id.toUpperCase()}</p>
                                 </div>
                                 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-10 border-t border-black/5">
@@ -426,13 +464,13 @@ export default function CreateProofPage() {
                                     </div>
                                 </div>
 
-                                <div className="space-y-6 pt-12 border-t border-black/5">
+                                <div className="space-y-4 md:space-y-6 pt-12 border-t border-black/5">
                                     <div className="flex justify-between items-center">
                                         <span className="text-[10px] font-bold uppercase tracking-widest text-black/30">Cryptographic Signature</span>
                                         <FingerIcon size={16} className="text-[#3D541D]" />
                                     </div>
-                                    <div className="bg-black/[0.03] p-10 rounded-[2.5rem] relative overflow-hidden group border border-black/5">
-                                        <code className="block font-mono text-[11px] break-all text-black/40 leading-relaxed relative z-10">
+                                    <div className="bg-black/[0.03] p-6 md:p-10 rounded-[1.5rem] md:rounded-[2.5rem] relative overflow-hidden group border border-black/5">
+                                        <code className="block font-mono text-[10px] md:text-[11px] break-all text-black/40 leading-relaxed relative z-10">
                                             {proof.hash}
                                         </code>
                                         <div className="absolute inset-0 bg-lime/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
@@ -441,11 +479,11 @@ export default function CreateProofPage() {
                             </div>
 
                             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                                <Link href={`/verify/${proof.id}`} className="flex-1 flex items-center justify-center gap-4 bg-black text-white h-20 rounded-[1.5rem] font-bold text-lg hover:bg-black/90 transition-all shadow-2xl shadow-black/20">
+                                <Link href={`/verify/${proof.id}`} className="px-10 flex items-center justify-center gap-4 bg-black text-white h-16 md:h-20 rounded-[1.2rem] md:rounded-[1.5rem] font-bold text-sm md:text-base hover:bg-black/90 transition-all shadow-2xl shadow-black/20">
                                     <Eye size={20} />
                                     Explore Entry
                                 </Link>
-                                <button className="h-20 px-10 flex items-center justify-center gap-3 bg-[#F8F8F8] border border-black/5 rounded-[1.5rem] text-black hover:bg-black hover:text-white transition-all font-bold">
+                                <button className="h-16 md:h-20 px-10 flex items-center justify-center gap-3 bg-[#F8F8F8] border border-black/5 rounded-[1.2rem] md:rounded-[1.5rem] text-black hover:bg-black hover:text-white transition-all font-bold text-sm md:text-base">
                                     <Share2 size={20} />
                                     Share Proof
                                 </button>
@@ -489,6 +527,12 @@ export default function CreateProofPage() {
           />
         )}
       </AnimatePresence>
+
+      <SubmitProofModal 
+        isOpen={isProofModalOpen} 
+        onClose={() => setIsProofModalOpen(false)} 
+        onSuccess={fetchStatus}
+      />
     </div>
   );
 }

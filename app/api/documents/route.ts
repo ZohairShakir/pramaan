@@ -19,6 +19,20 @@ export async function POST(request: NextRequest) {
     }
 
     const userId = (session.user as any)?.id;
+
+    // Strict validation: Only verified issuers can anchor documents
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { isVerifiedIssuer: true }
+    });
+
+    if (!user?.isVerifiedIssuer) {
+      return NextResponse.json(
+        { error: 'Identity validation required. Please submit your institutional documents for verification in your profile before issuing proofs.' },
+        { status: 403 }
+      );
+    }
+
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
     const category = formData.get('category') as string || 'General';

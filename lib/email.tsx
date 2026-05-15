@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 import { render } from '@react-email/render';
-import { ProofEmailTemplate, WelcomeEmailTemplate, OTPEmailTemplate } from './email-templates';
+import { ProofEmailTemplate, WelcomeEmailTemplate, OTPEmailTemplate, VerifiedEmailTemplate } from './email-templates';
 import * as React from 'react';
 
 const transporter = nodemailer.createTransport({
@@ -111,6 +111,30 @@ export async function sendOTPEmail({
     return { data: info };
   } catch (err) {
     console.error('[EMAIL_HUB] ❌ Critical OTP Error:', err);
+    return { error: err };
+  }
+}
+
+export async function sendVerifiedEmail({
+  to,
+  userName,
+}: {
+  to: string;
+  userName: string;
+}) {
+  console.log(`[EMAIL_HUB] Attempting to send Verified email to: ${to}`);
+  try {
+    const html = await render(<VerifiedEmailTemplate userName={userName} />);
+    const info = await transporter.sendMail({
+      from: fromEmail,
+      to,
+      subject: '[VERIFIED] Institutional Access Activated',
+      html,
+    });
+    console.log(`[EMAIL_HUB] ✅ Verification email sent! MessageID: ${info.messageId}`);
+    return { data: info };
+  } catch (err) {
+    console.error('[EMAIL_HUB] ❌ Critical Verification Email Error:', err);
     return { error: err };
   }
 }

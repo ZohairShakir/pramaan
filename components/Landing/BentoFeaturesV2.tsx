@@ -13,87 +13,122 @@ import { cn } from "@/lib/utils";
 export const BentoFeaturesV2: React.FC = () => {
   const features = [
     {
-      title: "Decentralized Registry",
-      desc: "Every document is anchored to the Polygon Mainnet, ensuring permanent, immutable proof of authenticity that cannot be censored.",
+      title: "Safe and Permanent",
+      desc: "Documents are stored in a way that they can never be changed or deleted. They are safe forever.",
       icon: <Globe className="text-black" size={28} />,
       className: "md:col-span-2 bg-[#F2E6E1]",
       visual: (
-        <div className="relative mt-8 h-40 w-full overflow-hidden flex items-center justify-center">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#3D541D10,transparent_70%)]" />
-            <div className="flex items-center gap-8">
+        <div className="relative mt-8 h-48 w-full overflow-hidden flex items-center justify-center">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#3D541D15,transparent_70%)]" />
+            <div className="flex items-center gap-6 md:gap-10">
                 {[1, 2, 3, 4, 5].map(i => (
                     <motion.div 
                         key={i}
-                        animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.6, 0.3] }}
-                        transition={{ duration: 3, delay: i * 0.5, repeat: Infinity }}
-                        className="w-12 h-12 rounded-xl bg-white flex items-center justify-center shadow-sm"
+                        animate={{ 
+                          y: [0, -10, 0],
+                          rotate: [0, 5, 0],
+                          opacity: [0.4, 0.8, 0.4] 
+                        }}
+                        transition={{ 
+                          duration: 4, 
+                          delay: i * 0.7, 
+                          repeat: Infinity,
+                          ease: "easeInOut"
+                        }}
+                        className="w-14 h-16 rounded-2xl bg-white flex flex-col items-center justify-center shadow-xl border border-black/5"
                     >
-                        <Logo size={24} className="opacity-20" />
+                        <Logo size={28} className="opacity-40 mb-1" />
+                        <div className="w-6 h-1 bg-black/10 rounded-full" />
                     </motion.div>
                 ))}
             </div>
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-white/50 backdrop-blur-sm px-4 py-1.5 rounded-full border border-black/5">
                 <div className="w-2 h-2 rounded-full bg-lime animate-pulse" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-black/30">Network Live</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-black/40">Secure Sync Live</span>
             </div>
         </div>
       )
     },
     {
-      title: "ZKP Privacy",
-      desc: "Verify credentials without ever exposing sensitive data. Zero-Knowledge Proofs ensure 100% privacy.",
+      title: "100% Private",
+      desc: "Check credentials without sharing any personal information. Your data stays yours.",
       icon: <Lock className="text-lime" size={28} />,
       className: "md:col-span-1 bg-black text-white",
       visual: (
         <div className="mt-8 flex justify-center">
-            <div className="w-24 h-24 rounded-full border-2 border-white/10 flex items-center justify-center relative">
-                <Fingerprint size={40} className="text-lime" />
+            <div className="w-28 h-28 rounded-[2rem] border-2 border-white/10 flex items-center justify-center relative bg-white/5 overflow-hidden">
+                <Fingerprint size={48} className="text-lime relative z-10" />
                 <motion.div 
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-0 border-t-2 border-lime rounded-full"
+                    animate={{ 
+                      scale: [1, 1.5, 1],
+                      opacity: [0.1, 0.2, 0.1]
+                    }}
+                    transition={{ duration: 4, repeat: Infinity }}
+                    className="absolute inset-0 bg-lime rounded-full blur-2xl"
                 />
             </div>
         </div>
       )
     },
     {
-      title: "Institutional Console",
-      desc: "A high-authority dashboard for large-scale document issuance, category management, and audit trail tracking.",
+      title: "Easy Dashboard",
+      desc: "A simple control panel to manage all your documents and checks in one place.",
       icon: <Cpu className="text-black" size={28} />,
       className: "md:col-span-1 bg-[#F8F8F8]",
       visual: (
-        <div className="mt-8 space-y-3">
+        <div className="mt-8 space-y-4 px-4">
             {[1, 2, 3].map(i => (
-                <div key={i} className="bg-white p-3 rounded-xl border border-black/5 flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-black/10" />
-                    <div className="h-2 w-24 bg-black/5 rounded-full" />
-                </div>
+                <motion.div 
+                  key={i} 
+                  initial={{ x: -20, opacity: 0 }}
+                  whileInView={{ x: 0, opacity: 1 }}
+                  transition={{ delay: i * 0.1 }}
+                  className="bg-white p-4 rounded-2xl border border-black/5 flex items-center gap-4 shadow-sm"
+                >
+                    <div className={cn("w-3 h-3 rounded-full", i === 1 ? "bg-lime" : "bg-black/10")} />
+                    <div className="space-y-2 flex-1">
+                      <div className="h-2 w-full bg-black/5 rounded-full" />
+                      <div className="h-2 w-2/3 bg-black/5 rounded-full opacity-50" />
+                    </div>
+                </motion.div>
             ))}
         </div>
       )
     },
     {
-      title: "Real-time Verification",
-      desc: "Verify any document instantly via file upload, unique ID, or QR scan with sub-second cryptographic response times.",
+      title: "Instant Check",
+      desc: "Scan a QR code or upload a file to check if it's real in seconds. No waiting.",
       icon: <Zap className="text-black" size={28} />,
       className: "md:col-span-2 bg-[#F8F8F8]",
       visual: (
-        <div className="relative mt-8 h-40 flex items-end justify-center gap-4">
-            <div className="w-full max-w-sm bg-white rounded-2xl border border-black/5 p-6 shadow-xl relative overflow-hidden group">
-                <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                        <ShieldCheck size={18} className="text-lime" />
-                        <span className="text-xs font-bold">Authentic Record</span>
+        <div className="relative mt-8 h-48 flex items-center justify-center">
+            <motion.div 
+              whileHover={{ y: -5 }}
+              className="w-full max-w-sm bg-white rounded-3xl border border-black/5 p-8 shadow-2xl relative overflow-hidden group"
+            >
+                <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-full bg-lime/20 flex items-center justify-center">
+                          <ShieldCheck size={20} className="text-[#3D541D]" />
+                        </div>
+                        <span className="text-sm font-bold">Real Document</span>
                     </div>
-                    <span className="text-[10px] font-bold text-black/20">#PR_0X7...</span>
+                    <div className="px-3 py-1 bg-black/5 rounded-full text-[10px] font-bold text-black/40">VERIFIED</div>
                 </div>
-                <div className="space-y-2">
-                    <div className="h-2 w-full bg-black/5 rounded-full" />
-                    <div className="h-2 w-2/3 bg-black/5 rounded-full" />
+                <div className="space-y-3">
+                    <div className="h-2.5 w-full bg-black/5 rounded-full" />
+                    <div className="h-2.5 w-3/4 bg-black/5 rounded-full" />
+                    <div className="h-2.5 w-1/2 bg-black/5 rounded-full opacity-40" />
                 </div>
-                <div className="absolute inset-0 bg-lime/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-            </div>
+                <div className="absolute inset-0 bg-lime/[0.02] opacity-0 group-hover:opacity-100 transition-opacity" />
+                
+                {/* Decorative scanning line */}
+                <motion.div 
+                  animate={{ y: [0, 160, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                  className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-lime to-transparent opacity-20"
+                />
+            </motion.div>
         </div>
       )
     }
@@ -109,14 +144,14 @@ export const BentoFeaturesV2: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               className="text-[10px] font-bold uppercase tracking-[0.4em] text-black/30"
             >
-              The Infrastructure of Trust
+              A Simple Way to Trust
             </motion.span>
             <h2 className="text-6xl md:text-8xl font-bold tracking-tight uppercase leading-[0.8]">
-                Authority <br /><span className="bg-lime px-4 py-1 rounded-sm inline-block mt-4">Redefined.</span>
+                Trust <br /><span className="bg-lime px-4 py-1 rounded-sm inline-block mt-4">Made Simple.</span>
             </h2>
           </div>
           <p className="text-black/40 max-w-sm text-xl font-medium leading-relaxed italic">
-            "A global standard for cryptographic document permanence and institutional audit."
+            "The easiest way for anyone to check if a document is real and original."
           </p>
         </div>
 

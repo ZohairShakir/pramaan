@@ -16,12 +16,14 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import { Logo } from '@/components/Logo';
+import SubmitProofModal from '@/components/SubmitProofModal';
 
 export default function Navbar() {
   const { data: session } = useSession();
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isProofModalOpen, setIsProofModalOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -33,6 +35,8 @@ export default function Navbar() {
   if (pathname === '/login' || pathname === '/signup') return null;
 
   const isHome = pathname === '/';
+  const isVerified = (session?.user as any)?.isVerifiedIssuer;
+  const hasSubmitted = (session?.user as any)?.hasSubmittedProof;
 
   const navLinks = [
     { name: 'Home', href: '/' },
@@ -46,6 +50,7 @@ export default function Navbar() {
   }
 
   return (
+    <>
     <nav className={cn(
       "fixed top-0 left-0 w-full z-[100] transition-all duration-500 px-6",
       scrolled ? "py-3 bg-white/80 backdrop-blur-md shadow-sm" : "py-5 bg-transparent"
@@ -82,6 +87,16 @@ export default function Navbar() {
                 animate={{ opacity: 1, x: 0 }}
                 className="flex items-center gap-4"
               >
+                {!isVerified && !hasSubmitted && (
+                  <button 
+                    onClick={() => setIsProofModalOpen(true)}
+                    className="hidden sm:flex items-center gap-2 bg-[#F2E6E1] text-black px-5 py-2 rounded-xl text-xs font-bold hover:bg-black hover:text-white transition-all"
+                  >
+                    <ShieldCheck size={14} />
+                    Submit Proof
+                  </button>
+                )}
+                
                 <div className="hidden lg:flex flex-col items-end mr-2">
                   <span className="text-[10px] font-bold text-black">Hello, {session.user?.name?.split(' ')[0] || session.user?.email?.split('@')[0]}</span>
                   <span className="text-[8px] font-medium text-black/40 uppercase tracking-widest">Institutional Partner</span>
@@ -170,5 +185,10 @@ export default function Navbar() {
         )}
       </AnimatePresence>
     </nav>
+    <SubmitProofModal 
+      isOpen={isProofModalOpen} 
+      onClose={() => setIsProofModalOpen(false)} 
+    />
+    </>
   );
 }

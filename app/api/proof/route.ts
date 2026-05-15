@@ -37,6 +37,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'User ID missing from session' }, { status: 401 });
     }
 
+    // Strict validation: Only verified issuers can anchor documents
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { isVerifiedIssuer: true }
+    });
+
+    if (!user?.isVerifiedIssuer) {
+      return NextResponse.json(
+        { error: 'Identity validation required. Please submit your institutional documents for verification in your profile before issuing proofs.' },
+        { status: 403 }
+      );
+    }
+
     // Calculate SHA-256 hash
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);

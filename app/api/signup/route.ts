@@ -5,7 +5,7 @@ import { sendWelcomeEmail } from '@/lib/email';
 
 export async function POST(req: Request) {
   try {
-    const { name, email, password } = await req.json();
+    const { name, email, password, hasSubmittedProof } = await req.json();
     console.log(`[SIGNUP_API] Attempting registration for: ${email}`);
 
     if (!name || !email || !password) {
@@ -41,6 +41,7 @@ export async function POST(req: Request) {
         name,
         email,
         password: hashedPassword,
+        hasSubmittedProof: !!hasSubmittedProof,
       },
     });
     

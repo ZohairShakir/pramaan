@@ -25,6 +25,7 @@ model User {
   
   organizationName String?
   isVerifiedIssuer Boolean @default(false)
+  hasSubmittedProof Boolean @default(false)
   trustScore       Float   @default(0.0)
   
   createdAt     DateTime  @default(now())

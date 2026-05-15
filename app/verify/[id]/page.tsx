@@ -113,32 +113,32 @@ export default async function VerificationPage({ params }: VerificationPageProps
       accentColor: "text-[#3D541D]",
       bg: "bg-[#F2E6E1]",
       icon: <ShieldCheck className="w-12 h-12" />,
-      label: "CERTIFIED AUTHENTIC",
-      desc: "This document has been cryptographically settled on the Polygon mainnet."
+      label: "VERIFIED REAL",
+      desc: "This document is confirmed to be original and safe."
     },
     VERIFIED: {
       color: "text-black",
       accentColor: "text-[#3D541D]",
       bg: "bg-[#F2E6E1]",
       icon: <ShieldCheck className="w-12 h-12" />,
-      label: "CERTIFIED AUTHENTIC",
-      desc: "This document has been cryptographically settled on the Polygon mainnet."
+      label: "VERIFIED REAL",
+      desc: "This document is confirmed to be original and safe."
     },
     REVOKED: {
       color: "text-red-600",
       accentColor: "text-red-600",
       bg: "bg-red-50",
       icon: <AlertTriangle className="w-12 h-12" />,
-      label: "DOCUMENT REVOKED",
-      desc: "This proof was previously valid but has been formally withdrawn by the issuer."
+      label: "CANCELLED",
+      desc: "This document was once valid but has been cancelled by the issuer."
     },
     SUSPENDED: {
       color: "text-black/60",
       accentColor: "text-black/60",
       bg: "bg-black/5",
       icon: <XCircle className="w-12 h-12" />,
-      label: "GENESIS SUSPENDED",
-      desc: "Warning: This document status is currently under institutional review."
+      label: "UNDER REVIEW",
+      desc: "Warning: This document is currently being checked for errors."
     }
   };
 
@@ -184,7 +184,7 @@ export default async function VerificationPage({ params }: VerificationPageProps
                                 <div className="relative z-10 flex flex-col items-center gap-8">
                                     <Logo size={120} className="opacity-10 group-hover:opacity-100 transition-all duration-700 scale-90 group-hover:scale-100" />
                                     <div className="text-center space-y-2">
-                                        <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-black/20">Digital Fingerprint</p>
+                                        <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-black/20">Digital Signature</p>
                                         <p className="font-mono text-[9px] text-black/40 break-all max-w-[200px]">{data.hash}</p>
                                     </div>
                                 </div>
@@ -193,24 +193,24 @@ export default async function VerificationPage({ params }: VerificationPageProps
                                         <div className="w-20 h-20 bg-black rounded-3xl flex items-center justify-center mx-auto shadow-2xl">
                                             <ShieldCheck size={32} className="text-lime" />
                                         </div>
-                                        <p className="text-xs font-bold uppercase tracking-widest">Tamper-Proof Ledger</p>
+                                        <p className="text-xs font-bold uppercase tracking-widest">Tamper-Proof Record</p>
                                     </div>
                                 </div>
                             </div>
                             
                             <div className="grid grid-cols-2 gap-8 px-4">
                                 <div className="space-y-1">
-                                    <p className="text-[10px] font-bold text-black/30 uppercase tracking-widest">Settlement Layer</p>
+                                    <p className="text-[10px] font-bold text-black/30 uppercase tracking-widest">Secure Storage</p>
                                     <p className="text-sm font-bold flex items-center gap-2">
                                         <Globe2 size={14} className="text-[#3D541D]" />
-                                        Polygon Mainnet
+                                        Polygon Network
                                     </p>
                                 </div>
                                 <div className="text-right space-y-1">
-                                    <p className="text-[10px] font-bold text-black/30 uppercase tracking-widest">Network Speed</p>
+                                    <p className="text-[10px] font-bold text-black/30 uppercase tracking-widest">Checking Speed</p>
                                     <p className="text-sm font-bold flex items-center justify-end gap-2">
                                         <Zap size={14} className="text-[#3D541D]" />
-                                        Instant Audit
+                                        Instant Check
                                     </p>
                                 </div>
                             </div>
