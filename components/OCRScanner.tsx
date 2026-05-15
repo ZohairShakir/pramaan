@@ -61,6 +61,44 @@ export default function OCRScanner({ onScanComplete, onClose }: OCRScannerProps)
     setShowCamera(false);
   };
 
+  // Continuous Live QR Scanning
+  useEffect(() => {
+    let animationFrameId: number;
+    
+    const scanFrame = () => {
+      if (showCamera && videoRef.current && canvasRef.current && !isProcessing && !extractedData) {
+        const video = videoRef.current;
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        
+        if (ctx && video.readyState === video.HAVE_ENOUGH_DATA) {
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const code = jsQR(imageData.data, imageData.width, imageData.height, {
+            inversionAttempts: "dontInvert",
+          });
+          
+          if (code) {
+            console.log("[SCANNER] Live QR Detected:", code.data);
+            stopCamera();
+            processImage(canvas.toDataURL('image/png'));
+            return; // Exit loop
+          }
+        }
+      }
+      animationFrameId = requestAnimationFrame(scanFrame);
+    };
+
+    if (showCamera) {
+      animationFrameId = requestAnimationFrame(scanFrame);
+    }
+
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [showCamera, isProcessing, extractedData]);
+
   const capturePhoto = () => {
     if (videoRef.current && canvasRef.current) {
       const context = canvasRef.current.getContext('2d');

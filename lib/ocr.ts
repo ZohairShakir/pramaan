@@ -12,6 +12,7 @@ async function getWorker() {
 
 /**
  * Scans an image for QR codes and extracts data if found
+ * Optimized for small QRs using a multi-pass approach
  */
 export async function detectQRCode(imageSource: string | File): Promise<string | null> {
   return new Promise((resolve) => {
@@ -28,13 +29,24 @@ export async function detectQRCode(imageSource: string | File): Promise<string |
       ctx.drawImage(img, 0, 0);
       
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const code = jsQR(imageData.data, imageData.width, imageData.height);
       
-      if (code) {
-        resolve(code.data);
-      } else {
-        resolve(null);
+      // Pass 1: Standard detection
+      let code = jsQR(imageData.data, imageData.width, imageData.height);
+      if (code) return resolve(code.data);
+
+      // Pass 2: High Contrast / Binarization for small/faint QRs
+      const data = imageData.data;
+      for (let i = 0; i < data.length; i += 4) {
+        const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+        const threshold = 128;
+        const val = avg > threshold ? 255 : 0;
+        data[i] = data[i+1] = data[i+2] = val;
       }
+      
+      code = jsQR(data, imageData.width, imageData.height);
+      if (code) return resolve(code.data);
+
+      resolve(null);
     };
     
     img.onerror = () => resolve(null);
