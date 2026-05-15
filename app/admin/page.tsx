@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Logo } from '@/components/Logo';
+import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
 export default function AdminPage() {
