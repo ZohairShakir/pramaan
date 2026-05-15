@@ -13,7 +13,8 @@ import {
   BadgeCheck,
   Cpu,
   Camera,
-  Loader2
+  Loader2,
+  Clock
 } from 'lucide-react';
 import { toast } from 'sonner';
 import Image from 'next/image';
